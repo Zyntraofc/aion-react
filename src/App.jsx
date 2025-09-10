@@ -1,6 +1,7 @@
 import { SidebarItem } from "./components/sidebarItem/index.jsx";
 import { Sidebar } from "./components/sidebar/index.jsx";
 import { LayoutDashboard, BarChart3 } from "lucide-react";
+import Header from "./components/header/index.jsx";
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                 <SidebarItem icon={<BarChart3 size={20} />} text="Colaboradores" />
                 <SidebarItem icon={<BarChart3 size={20} />} text="Onboarding" />
             </Sidebar>
+            <Header />
         </main>
     );
 }
