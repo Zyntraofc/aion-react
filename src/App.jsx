@@ -18,7 +18,6 @@ export default function App() {
                 <SidebarItem icon={<BarChart3 size={20} />} text="Onboarding" />
             </Sidebar>
             <Header />
-
         </main>
     );
 }
