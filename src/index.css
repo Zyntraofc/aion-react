@@ -14,6 +14,11 @@
     --color-neutral-300: #E0E0E0;
     --color-neutral-900: #212121;
 }
+.body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
 
 .grid-container {
   display: grid;
