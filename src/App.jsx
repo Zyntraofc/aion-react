@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SidebarItem } from "./components/sidebarItem/index.jsx";
 import { Sidebar } from "./components/sidebar/index.jsx";
 import { LayoutDashboard, BarChart3 } from "lucide-react";
+import Header from "./components/header/index.jsx";
 
 export default function App() {
     const [activeItem, setActiveItem] = useState("Dashboard");
@@ -34,6 +35,7 @@ export default function App() {
                     onClick={() => setActiveItem("Onboarding")}
                 />
             </Sidebar>
+            <Header />
         </main>
     );
 }
