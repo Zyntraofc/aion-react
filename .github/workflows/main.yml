@@ -1,0 +1,45 @@
+name: CI/CD Vite + React
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pega o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Configura Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3. Instala dependências
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Executa testes (se houver)
+      - name: Run tests
+        run: npm test
+
+      # 5. Build do projeto
+      - name: Build project
+        run: npm run build
+
+      # 6. (Opcional) Deploy - exemplo Netlify
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1
+        with:
+          publish-dir: ./dist
+          production-deploy: true
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
