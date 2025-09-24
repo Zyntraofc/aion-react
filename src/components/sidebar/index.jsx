@@ -5,8 +5,8 @@ export function Sidebar({ children }) {
     const [expanded, setExpanded] = useState(true);
 
     return (
-        <aside className="sidebar">
-            <nav className="h-full flex flex-col bg-white border-r shadow-sm">
+        <aside className="sm:w-[250px] w-full m-7 rounded-md flex flex-col">
+            <nav className="h-full flex flex-col bg-primary border-r shadow-sm">
                 {/* Header */}
                 <div className="p-4 pb-2 flex justify-between items-center">
                     <img
@@ -18,7 +18,7 @@ export function Sidebar({ children }) {
                     />
                     <button
                         onClick={() => setExpanded((curr) => !curr)}
-                        className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+                        className="p-1.5 rounded-lg bg-gray-50 hover:bg-primary-100"
                     >
                         {expanded ? <ChevronFirst /> : <ChevronLast />}
                     </button>
@@ -26,7 +26,7 @@ export function Sidebar({ children }) {
 
                 {/* Menu */}
                 <ul className="flex-1 px-3">{children}</ul>
-            
+
             </nav>
         </aside>
     );
