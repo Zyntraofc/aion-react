@@ -1,32 +1,30 @@
 import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
 import { useState } from "react";
+import Logo from '../../assets/icons/logo_aion.svg';
 
 export function Sidebar({ children }) {
-    const [expanded, setExpanded] = useState(true);
 
     return (
-        <aside className="sm:w-[250px] w-full m-7 rounded-md flex flex-col">
-            <nav className="h-full flex flex-col bg-primary border-r shadow-sm">
+        <aside className="sm:w-[250px] m-7 flex flex-col">
+            <nav className="h-full flex flex-col bg-primary rounded-[25px] shadow-sm p-2 justify-center">
                 {/* Header */}
-                <div className="p-4 pb-2 flex justify-between items-center">
+                <div className="p-4 pb-2 flex items-center gap-x-3">
                     <img
-                        src="https://img.logoipsum.com/243.svg"
-                        className={`overflow-hidden transition-all ${
-                            expanded ? "w-32" : "w-0"
-                        }`}
+                        src={Logo}
                         alt="Logo"
                     />
-                    <button
-                        onClick={() => setExpanded((curr) => !curr)}
-                        className="p-1.5 rounded-lg bg-gray-50 hover:bg-primary-100"
-                    >
-                        {expanded ? <ChevronFirst /> : <ChevronLast />}
-                    </button>
+                    <div>
+                        <h3 className="font-semibold text-white">Sistema RH</h3>
+                        <h5 className="font-regular text-white font-normal">Gestão de pessoas</h5>
+                    </div>
                 </div>
 
+                {/* Linha de Gradiente Triplo - Centralizada */}
+                <div className="flex justify-center my-2"> {/* Container para centralizar a linha */}
+                    <div className="w-9/12 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                </div>
                 {/* Menu */}
                 <ul className="flex-1 px-3">{children}</ul>
-
             </nav>
         </aside>
     );
