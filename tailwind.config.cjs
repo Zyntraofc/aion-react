@@ -12,6 +12,9 @@ module.exports = {
                 warning: colors.warning,
                 neutral: colors.neutral,
             },
+            fontFamily: {
+                sans: ["Poppins", "sans-serif"],
+            }
         },
     },
     plugins: [],

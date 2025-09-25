@@ -32,3 +32,35 @@
   height: 100px;
   border-radius: 8px;
 }
+
+/* Seu arquivo CSS global (ex: index.css) */
+
+h1 {
+    @apply text-3xl;
+}
+
+h2 {
+    @apply text-2xl;
+}
+
+h3 {
+    @apply text-[16px];
+}
+h4{
+    @apply text-[14px]
+}
+h5 {
+    @apply text-[12px];
+}
+
+h5 {
+    @apply text-[12px]
+        }
+h6 {
+    @apply text-[10px]
+}
+
+/* Você pode adicionar outros elementos se precisar */
+p {
+    @apply text-base;
+}
