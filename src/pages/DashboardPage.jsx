@@ -1,10 +1,10 @@
 import React from 'react';
-import Headers from "./components/header";
-import Title from './components/title';
-import Weekly from './components/weekly';
+import Headers from "../components/header/index.jsx";
+import Title from '../components/title/index.jsx';
+import Weekly from '../components/weekly/index.jsx';
 
-import JustificativasPendentes from './components/pendingJustifications';
-import QuickInformations from './components/quickInformations';
+import JustificativasPendentes from '../components/pendingJustifications/index.jsx';
+import QuickInformations from '../components/quickInformations/index.jsx';
 
 function DashboardPage() {
   return(
