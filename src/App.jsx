@@ -47,7 +47,7 @@ function AppContent() {
                             <SidebarItem
                                 icon={<img src={icon} alt={text} width={20} height={20} />}
                                 text={text}
-                                active={isActive}  // passa prop pro item
+                                active={isActive}
                             />
                         </Link>
                     );
