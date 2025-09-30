@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+/* Aqui você pode adicionar customizações, como suas cores do colors.js */
+@theme {
+    --color-primary: #9299FF;
+    --color-hover-item: #A7ADFF;
+    --color-selected-item: #3A47FF;
+    --color-secondary: #FFC107;
+    --color-success: #4CAF50;
+    --color-danger: #F44336;
+    --color-warning: #FF9800;
+    --color-neutral-100: #F5F5F5;
+    --color-neutral-200: #EEEEEE;
+    --color-neutral-300: #E0E0E0;
+    --color-neutral-900: #212121;
+}
+.body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
