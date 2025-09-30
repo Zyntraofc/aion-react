@@ -1,7 +1,7 @@
 import React from 'react';
-import Headers from "./components/header";
-import Title from './components/title';
-import Permissions from './components/permissions';
+import Headers from "../components/header/index.jsx";
+import Title from '../components/title/index.jsx';
+import Permissions from '../components/permissions/index.jsx';
 
 function ColaboradoresPage() {
     return (

@@ -1,13 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import { useState } from "react";
-import HomePage from "./HomePage";
-import DashboardPage from "./DashboardPage";
-import ColaboradoresPage from "./ColaboradoresPage";
-import OnboardingPage from "./OnboardingPage";
-import JustificativasPage from "./JustificativasPage";
-import NotificacoesPage from "./NotificacoesPage";
-import ConfiguracoesPage from "./ConfiguracoesPage";
-import ReportPage from "./ReportPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import DashboardPage from "./pages/DashboardPage.jsx";
+import ColaboradoresPage from "./pages/ColaboradoresPage.jsx";
+import OnboardingPage from "./pages/OnboardingPage.jsx";
+import JustificativasPage from "./pages/JustificativasPage.jsx";
+import NotificacoesPage from "./pages/NotificacoesPage.jsx";
+import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
+import ReportPage from "./pages/ReportPage.jsx";
 import {
     homeIcon,
     dashboardIcon,
@@ -56,6 +56,7 @@ function AppContent() {
 
             {/* Rotas */}
             <Routes>
+                <Route path="/" element={<Navigate to="/home" replace />} />
                 {routes.map(({ path, element }) => (
                     <Route key={path} path={path} element={element} />
                 ))}
