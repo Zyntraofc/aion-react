@@ -1,10 +1,10 @@
 // src/DashboardPage.jsx
 import React from 'react';
-import Header from "./components/header";
-import Title from "./components/title";
-import QuickInformations from "./components/quickInformations";
-import QuickActions from "./components/quickActions";
-import Recent from "./components/recent";
+import Header from "../components/header/index.jsx";
+import Title from "../components/title/index.jsx";
+import QuickInformations from "../components/quickInformations/index.jsx";
+import QuickActions from "../components/quickActions/index.jsx";
+import Recent from "../components/recent/index.jsx";
 
 export default function HomePage() {
     return (
