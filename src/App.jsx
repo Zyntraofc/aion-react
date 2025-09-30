@@ -1,9 +1,7 @@
 import { SidebarItem } from "./components/sidebarItem";
 import { Sidebar } from "./components/sidebar";
 import { LayoutDashboard, BarChart3, HomeIcon, UserIcon, BookIcon, FileIcon, TableConfigIcon, BellIcon } from "lucide-react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom"; // Importe o Router e as Rotas
-
-// Importe todos os seus componentes de página
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom"; 
 import HomePage from "./HomePage";
 import DashboardPage from "./DashboardPage";
 import ColaboradoresPage from "./ColaboradoresPage";
@@ -11,16 +9,16 @@ import OnboardingPage from "./OnboardingPage";
 import JustificativasPage from "./JustificativasPage";
 import NotificacoesPage from "./NotificacoesPage";
 import ConfiguracoesPage from "./ConfiguracoesPage";
-
-
+import { useState } from "react";
+import { LayoutDashboard, BarChart3 } from "lucide-react";
 
 export default function App() {
-    return (
+    const [activeItem, setActiveItem] = useState("Dashboard");
 
-        <Router> {/* 1. Envolva toda a aplicação com <Router> */}
+    return (
+        <Router> 
             <main className="flex min-h-screen bg-gray-100">
                 <Sidebar>
-                    {/* 2. Use <Link> para cada item da barra lateral */}
                     <Link to="/home">
                         <SidebarItem icon={<HomeIcon size={20} />} text="Home" alert />
                     </Link>
@@ -43,8 +41,6 @@ export default function App() {
                         <SidebarItem icon={<TableConfigIcon size={20} />} text="Configurações" />
                     </Link>
                 </Sidebar>
-
-                {/* 3. Defina as rotas */}
                 <Routes>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/dashboard" element={<DashboardPage />} />
@@ -56,5 +52,7 @@ export default function App() {
                 </Routes>
             </main>
         </Router>
+
+ 
     );
 }
