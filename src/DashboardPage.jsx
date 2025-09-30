@@ -14,7 +14,6 @@ function DashboardPage() {
 
       <QuickInformations pendentes={7} aprovadas={3} colaboradoresAtivos={5} taxaAprovacao={80} analise={2}/>
 
-      {/* Container principal para as duas colunas */}
       <div className='flex p-4'>
 
 

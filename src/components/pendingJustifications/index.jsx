@@ -38,13 +38,11 @@ function JustificativasPendentes() {
 
   return (
     <div className="p-6 rounded-2xl border border-gray-300 shadow-sm">
-      {/* Título */}
       <div className="flex items-center space-x-2 mb-4">
         <ClockIcon size={20} className="text-blue-500" />
         <h1 className="text-xl font-bold text-gray-800">Justificativas Pendentes</h1>
       </div>
 
-      {/* Lista de Cards */}
       <div className="space-y-3">
         {justificativas.slice(-3).map((item, index) => {
           const prioridadeClasses =
@@ -66,7 +64,6 @@ function JustificativasPendentes() {
                   </span>
                 </div>
 
-                {/* Motivo + Data + Hora */}
                 <div className="flex items-center text-xs text-gray-500 mt-0.5 space-x-2">
                   <span>{item.motivo}</span>
                   <span>•</span>
@@ -79,7 +76,6 @@ function JustificativasPendentes() {
                   )}
                 </div>
 
-                {/* Prioridade */}
                 {item.prioridade && (
                   <span
                     className={`mt-1 inline-block px-2 py-0.5 text-[10px] font-medium rounded-full w-fit ${prioridadeClasses}`}
