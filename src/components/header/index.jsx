@@ -12,6 +12,7 @@ function Header() {
     <div className="w-full">
     <div className="flex items-center justify-between p-4">
       <div className="flex items-center space-x-15">
+          <ToogleSidebar />
         <NotificationIcon number={notificationCount} />
         <SearchBar />
       </div>
