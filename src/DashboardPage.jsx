@@ -17,7 +17,7 @@ function DashboardPage() {
       {/* Container principal para as duas colunas */}
       <div className='flex p-4'>
 
-        {/* Coluna da esquerda */}
+
         <div className=' p-4 w-3/5'>
           <JustificativasPendentes
             nome={"Raphaela"}
@@ -28,8 +28,6 @@ function DashboardPage() {
             horaRestante={"3"}
           />
         </div>
-
-        {/* Coluna da direita */}
         <div className='p-4 w-2/5'>
           <Weekly
             numberRequestsAproved={3}
