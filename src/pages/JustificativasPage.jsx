@@ -3,7 +3,7 @@ import Headers from "../components/header/index.jsx";
 
 function JustificativasPage() {
     return(
-        <Headers />
+        <div />
     )
 }
 export default JustificativasPage;
