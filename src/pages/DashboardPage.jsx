@@ -9,7 +9,6 @@ import QuickInformations from '../components/quickInformations/index.jsx';
 function DashboardPage() {
   return(
     <div className='flex-1 flex flex-col'>
-      <Headers />
       <Title title="Dashboard" />
 
       <QuickInformations pendentes={7} aprovadas={3} colaboradoresAtivos={5} taxaAprovacao={80} analise={2}/>
