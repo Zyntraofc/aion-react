@@ -2,10 +2,9 @@
 
 /* Aqui você pode adicionar customizações, como suas cores do colors.js */
 @theme {
-    --color-primary: #9299FF;
-    --color-hover-item: #A7ADFF;
-    --color-selected-item: #3A47FF;
-    --color-secondary: #FFC107;
+    --color-primary: #3A47FF;
+    --color-secondary: #792CFF;
+    --color-tertiary: #9299FF;
     --color-success: #4CAF50;
     --color-danger: #F44336;
     --color-warning: #FF9800;
