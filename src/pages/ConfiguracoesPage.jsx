@@ -6,7 +6,7 @@ import Permissions from '../components/permissions/index.jsx';
 function ColaboradoresPage() {
     return (
 <div className="flex-1 flex flex-col">
-    <Headers />
+    <div />
     <Title title="Configurações" descrisão={"Configurações do sistema"} />
     <Permissions />
 
