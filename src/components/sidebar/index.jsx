@@ -1,45 +1,43 @@
-import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
-import { useState } from "react";
 import Logo from '../../assets/icons/logo_aion.svg';
+import { useState } from "react";
 
-function Sidebar({ children }) {
+function Sidebar({ children, isCollapsed }) {
     return (
         <aside
-            className="
-                w-64                 /* largura da sidebar em telas >= sm */
-                flex flex-col        /* layout vertical */
-                sticky               /* fixa no scroll */
-                m-6 top-6            /* margens e distância do topo */
-                h-[calc(100vh-56px)] /* altura total da tela menos margens */
-            "
+            className={`
+                ${isCollapsed ? "w-20" : "w-64"} 
+                flex flex-col
+                sticky
+                m-6 top-6
+                h-[calc(100vh-56px)]
+                transition-all duration-300
+            `}
         >
             <nav
                 className="
                     flex flex-col
-                    h-full               /* preenche a altura da sidebar */
-                    bg-primary         /* fundo */
-                    rounded-[25px]       /* bordas arredondadas */
-                    shadow-sm            /* sombra leve */
-                    p-2                  /* padding interno */
-                    justify-start        /* alinha items ao topo */
+                    h-full
+                    bg-tertiary
+                    rounded-[25px]
+                    shadow-sm
+                    p-2
+                    justify-start
                 "
             >
                 {/* Header */}
-                <div className="
-                    p-4 /* padding */
-                    pb-2 /* padding bottom */
-                    flex /* display */
-                    items-center  /* alinhamento */
-                    gap-x-3 /* espaçamento horizontal */
-                    ">
-                    <img src={Logo} alt="Logo" />
-                    <div>
-                        <h3 className="font-semibold text-white">Sistema RH</h3>
-                        <h5 className="font-normal text-white">Gestão de pessoas</h5>
-                    </div>
+                <div className="flex items-center p-4 pb-2 gap-x-3">
+                    {!isCollapsed && (
+                        <>
+                            <img src={Logo} alt="Logo" />
+                            <div>
+                                <h3 className="font-semibold text-white">Sistema RH</h3>
+                                <h5 className="font-normal text-white">Gestão de pessoas</h5>
+                            </div>
+                        </>
+                    )}
                 </div>
 
-                {/* Linha de gradiente centralizada */}
+                {/* Linha de gradiente */}
                 <div className="flex justify-center my-2">
                     <div className="w-9/12 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent"></div>
                 </div>
