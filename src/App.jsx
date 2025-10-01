@@ -8,6 +8,8 @@ import JustificativasPage from "./pages/JustificativasPage.jsx";
 import NotificacoesPage from "./pages/NotificacoesPage.jsx";
 import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
 import ReportPage from "./pages/ReportPage.jsx";
+import Sidebar  from "./components/sidebar";
+import { SidebarItem } from "./components/sidebarItem";
 import {
     homeIcon,
     dashboardIcon,
@@ -18,12 +20,11 @@ import {
     settingsIcon,
     reportIcon
 } from "./assets/icons";
-
-import { Sidebar } from "./components/sidebar";
-import { SidebarItem } from "./components/sidebarItem";
+import Header from "./components/header/index.jsx";
 
 function AppContent() {
     const location = useLocation();
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const routes = [
         { path: "/home", text: "Home", element: <HomePage />, icon: homeIcon },
@@ -48,6 +49,7 @@ function AppContent() {
                                 icon={<img src={icon} alt={text} width={20} height={20} />}
                                 text={text}
                                 active={isActive}
+                                collapsed={isCollapsed}
                             />
                         </Link>
                     );
@@ -55,12 +57,15 @@ function AppContent() {
             </Sidebar>
 
             {/* Rotas */}
-            <Routes>
-                <Route path="/" element={<Navigate to="/home" replace />} />
-                {routes.map(({ path, element }) => (
-                    <Route key={path} path={path} element={element} />
-                ))}
-            </Routes>
+            <div className="flex-1">
+                <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
+                <Routes>
+                    <Route path="/" element={<Navigate to="/home" replace />} />
+                    {routes.map(({ path, element }) => (
+                        <Route key={path} path={path} element={element} />
+                    ))}
+                </Routes>
+            </div>
         </main>
     );
 }
