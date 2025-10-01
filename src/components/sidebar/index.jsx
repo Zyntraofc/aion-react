@@ -2,7 +2,7 @@ import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
 import { useState } from "react";
 import Logo from '../../assets/icons/logo_aion.svg';
 
-export function Sidebar({ children }) {
+function Sidebar({ children }) {
     return (
         <aside
             className="
@@ -52,3 +52,5 @@ export function Sidebar({ children }) {
         </aside>
     );
 }
+
+export default Sidebar;
