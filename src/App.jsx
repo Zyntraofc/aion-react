@@ -40,13 +40,13 @@ function AppContent() {
     return (
         <main className="flex min-h-screen bg-gray-100">
             {/* Sidebar dinâmica */}
-            <Sidebar>
+            <Sidebar isCollapsed={isCollapsed}>
                 {routes.map(({ path, text, icon }) => {
                     const isActive = location.pathname === path;
                     return (
                         <Link key={path} to={path}>
                             <SidebarItem
-                                icon={<img src={icon} alt={text} width={20} height={20} />}
+                                icon={<img src={icon} alt={text} className={"w-6 h-6"}/>}
                                 text={text}
                                 active={isActive}
                                 collapsed={isCollapsed}
