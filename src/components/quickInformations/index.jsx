@@ -2,7 +2,6 @@ import React from "react";
 import MetricCard from "../card/index.jsx";
 
 function QuickInformations({ cards = [] }) {
-    // Mapeia cor → classes do Tailwind
     const colorMap = {
         red: { border: "border-red-200", dot: "bg-red-500" },
         green: { border: "border-green-200", dot: "bg-green-500" },
@@ -21,13 +20,41 @@ function QuickInformations({ cards = [] }) {
             >
                 {cards.map((card, index) => {
                     const colors = colorMap[card.color] || colorMap.default;
+
+                    let iconElement;
+
+                    if (card.icon) {
+                        if (typeof card.icon === "string") {
+                            iconElement = (
+                                <img
+                                    src={card.icon}
+                                    alt={card.title}
+                                    className={`w-5 h-5 ${card.iconColor || ""}`}
+                                />
+                            );
+                        } else {
+                            iconElement = (
+                                <span className={`${card.iconColor || ""}`}>{card.icon}</span>
+                            );
+                        }
+                    } else {
+                        iconElement = (
+                            <span
+                                className={`w-2.5 h-2.5 rounded-full ${colors.dot}`}
+                            ></span>
+                        );
+                    }
+
                     return (
                         <MetricCard
                             key={index}
-                            icon={<span className={`w-2 h-2 rounded-full ${colors.dot}`} />}
+                            icon={iconElement}
                             title={card.title}
                             value={card.value}
+                            subtitle={card.subtitle}
+                            trend={card.trend}
                             borderColor={colors.border}
+                            trendColor={card.trendColor}
                         />
                     );
                 })}
