@@ -10,31 +10,21 @@ import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
 import ReportPage from "./pages/ReportPage.jsx";
 import Sidebar  from "./components/sidebar";
 import { SidebarItem } from "./components/sidebarItem";
-import {
-    homeIcon,
-    dashboardIcon,
-    colaboratorIcon,
-    onboardingIcon,
-    justificationIcon,
-    notificationIcon,
-    settingsIcon,
-    reportIcon
-} from "./assets/icons";
 import Header from "./components/header/index.jsx";
-
+import icons from "./assets/icons/index.jsx";
 function AppContent() {
     const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const routes = [
-        { path: "/home", text: "Home", element: <HomePage />, icon: homeIcon },
-        { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: dashboardIcon },
-        { path: "/colaboradores", text: "Colaboradores", element: <ColaboradoresPage />, icon: colaboratorIcon },
-        { path: "/onboarding", text: "Onboarding", element: <OnboardingPage />, icon: onboardingIcon },
-        { path: "/justificativas", text: "Justificativas", element: <JustificativasPage />, icon: justificationIcon },
-        { path: "/relatorios", text: "Relatórios", element: <ReportPage />, icon: reportIcon },
-        { path: "/notificacoes", text: "Notificações", element: <NotificacoesPage />, icon: notificationIcon },
-        { path: "/configuracoes", text: "Configurações", element: <ConfiguracoesPage />, icon: settingsIcon },
+        { path: "/home", text: "Home", element: <HomePage />, icon: icons.home },
+        { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: icons.dashboard },
+        { path: "/colaboradores", text: "Colaboradores", element: <ColaboradoresPage />, icon: icons.colaborator },
+        { path: "/onboarding", text: "Onboarding", element: <OnboardingPage />, icon: icons.onboarding },
+        { path: "/justificativas", text: "Justificativas", element: <JustificativasPage />, icon: icons.justification },
+        { path: "/relatorios", text: "Relatórios", element: <ReportPage />, icon: icons.report },
+        { path: "/notificacoes", text: "Notificações", element: <NotificacoesPage />, icon: icons.notification },
+        { path: "/configuracoes", text: "Configurações", element: <ConfiguracoesPage />, icon: icons.settings },
     ];
 
     return (
@@ -42,11 +32,12 @@ function AppContent() {
             {/* Sidebar dinâmica */}
             <Sidebar isCollapsed={isCollapsed}>
                 {routes.map(({ path, text, icon }) => {
-                    const isActive = location.pathname === path;
+                    const isActive = location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
                     return (
                         <Link key={path} to={path}>
                             <SidebarItem
-                                icon={<img src={icon} alt={text} className={"w-6 h-6"}/>}
+                                // CORREÇÃO: Passando o ícone JSX diretamente
+                                icon={icon}
                                 text={text}
                                 active={isActive}
                                 collapsed={isCollapsed}
@@ -56,15 +47,17 @@ function AppContent() {
                 })}
             </Sidebar>
 
-            {/* Rotas */}
-            <div className="flex-1">
+            {/* Conteúdo Principal */}
+            <div className="flex-1 overflow-y-auto">
                 <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
-                <Routes>
-                    <Route path="/" element={<Navigate to="/home" replace />} />
-                    {routes.map(({ path, element }) => (
-                        <Route key={path} path={path} element={element} />
-                    ))}
-                </Routes>
+                <div className="p-8 pt-3">
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/home" replace />} />
+                        {routes.map(({ path, element }) => (
+                            <Route key={path} path={path} element={element} />
+                        ))}
+                    </Routes>
+                </div>
             </div>
         </main>
     );
