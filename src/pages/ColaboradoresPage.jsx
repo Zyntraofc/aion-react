@@ -2,6 +2,7 @@ import React from 'react';
 import Headers from "../components/header/index.jsx";
 import QuickInformations from "../components/quickInformations/index.jsx";
 import Title from "../components/title/index.jsx";
+import GenericList from "../components/GenericList/GenericList.jsx";
 
 function ColaboradoresPage() {
     return (
@@ -14,6 +15,8 @@ function ColaboradoresPage() {
                 {title: "Departamentos", value: 47 }
             ]}
             />
+
+            <GenericList resource="colaboradores" visibleColumns={['name','email','role','status','actions']} />;
         </div>
     );
 }
