@@ -50,7 +50,7 @@ function AppContent() {
             {/* Conteúdo Principal */}
             <div className="flex-1 overflow-y-auto">
                 <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
-                <div className="p-8 pt-3">
+                <div className="p-3 pt-3">
                     <Routes>
                         <Route path="/" element={<Navigate to="/home" replace />} />
                         {routes.map(({ path, element }) => (
