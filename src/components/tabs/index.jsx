@@ -3,7 +3,7 @@ import React from 'react';
 
 const Tabs = ({ tabs, activeTab, onTabChange }) => {
   return (
-    <div className="flex bg-indigo-400 rounded-xl p-2 border-b-2 border-gray-200">
+    <div className="flex bg-tertiary rounded-xl p-2 border-b-2 border-gray-200">
       {tabs.map((tabName) => {
 
         const isActive = tabName === activeTab;
