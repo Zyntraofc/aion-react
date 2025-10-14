@@ -13,11 +13,10 @@ function Header({ onToggle }) {
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-baseline p-4">
+            <div className="flex items-center justify-between p-4 mt-1">
                 <div className="flex items-center space-x-4">
                     <ToogleSidebar onToggle={onToggle} />
                     <NotificationIcon number={notificationCount} />
-                    <SearchBar />
                 </div>
                 <div className="flex items-center">
                     <UserProfile nome={nome} cargo={cargo} email={email} foto={foto}/>
