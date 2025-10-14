@@ -10,7 +10,7 @@ function QuickInformations({ cards = [] }) {
     };
 
     return (
-        <div className="p-4 w-full">
+        <div className="pt-4 pr-4 pb-4">
             <div
                 className={`grid gap-6 w-full
           ${cards.length === 1 ? "grid-cols-1" : ""}
