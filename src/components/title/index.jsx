@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Title({ title , descrisão }) {
+function Title({ title , descricao }) {
   return (
     <div>
 
-    <h1 className="text-2xl font-bold ml-6" >{title}</h1>
-    <p className='text-sm ml-6'>{descrisão}</p>
+    <h1 className="text-2xl font-bold ml-2" >{title}</h1>
+    <p className='text-sm ml-2'>{descricao}</p>
     </div>
   );
 }

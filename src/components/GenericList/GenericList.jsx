@@ -22,7 +22,6 @@ export default function GenericList({ resource, visibleColumns, columnOverrides 
             if (!byId[id]) continue;
             byId[id] = { ...byId[id], ...o };
         }
-        // apply visibleColumns filter if provided
         let out = Object.values(byId);
         if (Array.isArray(visibleColumns)) {
             out = out.filter(c => visibleColumns.includes(c.id));
@@ -37,17 +36,17 @@ export default function GenericList({ resource, visibleColumns, columnOverrides 
             {loading && <div>Carregando...</div>}
             {error && <div className="text-danger">Erro: {String(error.message || error)}</div>}
 
-            <table className="table">
+            <table className="table w-full">
                 <thead>
-                <tr>
+                <tr className='align-baseline'>
                     {columns.map(col => (
-                        <th key={col.id}>{col.label || col.id}</th>
+                        <th key={col.id} className='text-left'>{col.label || col.id}</th>
                     ))}
                 </tr>
                 </thead>
                 <tbody>
                 {data.map((row, i) => (
-                    <tr key={row.id ?? i}>
+                    <tr key={row.cdMatricula ?? row.id ?? i}>
                         {columns.map(col => {
                             let value;
                             if (typeof col.accessor === 'function') value = col.accessor(row);
@@ -65,7 +64,7 @@ export default function GenericList({ resource, visibleColumns, columnOverrides 
                 </tbody>
             </table>
 
-            <div className="pagination">
+            <div className="pagination justify-between">
                 <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1}>Anterior</button>
                 <span>{page} / {Math.ceil((total || 0) / 10)}</span>
                 <button onClick={() => setPage(page + 1)} disabled={page * 10 >= total}>Próxima</button>

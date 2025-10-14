@@ -43,10 +43,11 @@ export function useListController(resource, options = {}) {
                 throw new Error(txt || res.statusText);
             }
             const json = await res.json();
-            // Expect shape { data: [], total: number, page, perPage }
-            setData(json.data || []);
-            setTotal(json.total ?? (json.data ? json.data.length : 0));
+            const dataArray = Array.isArray(json) ? json : (Array.isArray(json.data) ? json.data : []);
+            setData(dataArray);
+            setTotal(typeof json.total === 'number' ? json.total : dataArray.length);
             setPage(json.page ?? q.page);
+
         } catch (err) {
             if (err.name === 'AbortError') return;
             setError(err);
