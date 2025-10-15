@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ConfigCard from '../configCard';
-import FormGroup from '../FormGroup';
+import SelectGroup from '../selectGroup';
 import ToggleSwitch from '../ToggleSwitch';
 import ConfigSection from '../configSection';
 import { Edit, Trash2, PlusCircle, Clock, FileText, UserCheck, CheckCircle, XCircle } from 'lucide-react';
@@ -130,7 +130,7 @@ function JustificativasTabContent() {
                     description="Defina os limites de tempo para o envio da justificativa pelo funcionário e para a análise do aprovador."
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormGroup label="Prazo Máximo para Envio (dias)">
+                        <SelectGroup label="Prazo Máximo para Envio (dias)">
                             <div className="relative">
                                 <input
                                     type="number"
@@ -143,9 +143,9 @@ function JustificativasTabContent() {
                                 <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             </div>
                             <p className="text-xs text-gray-500 mt-1">Limite após o evento para o funcionário enviar a justificativa.</p>
-                        </FormGroup>
+                        </SelectGroup>
 
-                        <FormGroup label="Prazo Máximo para Análise (dias)">
+                        <SelectGroup label="Prazo Máximo para Análise (dias)">
                             <div className="relative">
                                 <input
                                     type="number"
@@ -158,7 +158,7 @@ function JustificativasTabContent() {
                                 <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                             </div>
                             <p className="text-xs text-gray-500 mt-1">Limite para o aprovador dar um retorno ao funcionário.</p>
-                        </FormGroup>
+                        </SelectGroup>
                     </div>
                 </ConfigSection>
 
@@ -223,7 +223,7 @@ function JustificativasTabContent() {
                 </ConfigSection>
 
                 <ConfigSection title="Adicionar Novo Tipo" layout="list">
-                    <FormGroup label="Nome do Novo Tipo de Justificativa">
+                    <SelectGroup label="Nome do Novo Tipo de Justificativa">
                         <div className="flex gap-2">
                             <input
                                 type="text"
@@ -247,7 +247,7 @@ function JustificativasTabContent() {
                                 Adicionar
                             </button>
                         </div>
-                    </FormGroup>
+                    </SelectGroup>
                 </ConfigSection>
             </ConfigCard>
     );

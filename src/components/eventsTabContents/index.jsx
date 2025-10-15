@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ConfigCard from '../configCard';
 import ConfigSection from '../configSection';
-import FormGroup from '../FormGroup';
+import SelectGroup from '../selectGroup';
 import { PlusCircle, Trash2, Calendar, Link } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY_EVENTOS = 'listaDeEventos';
@@ -77,7 +77,7 @@ function EventsTabContent() {
         >
             <ConfigSection title="Adicionar Novo Evento" layout="list">
                 <div className="space-y-4">
-                    <FormGroup label="Data e Hora do Evento">
+                    <SelectGroup label="Data e Hora do Evento">
                         <input
                             id="data"
                             type="datetime-local"
@@ -85,9 +85,9 @@ function EventsTabContent() {
                             onChange={handleNovoEventoChange}
                             className="p-3 border border-gray-300 rounded-lg w-full text-gray-700"
                         />
-                    </FormGroup>
+                    </SelectGroup>
 
-                    <FormGroup label="Título">
+                    <SelectGroup label="Título">
                         <input
                             id="titulo"
                             type="text"
@@ -96,9 +96,9 @@ function EventsTabContent() {
                             onChange={handleNovoEventoChange}
                             className="p-3 border border-gray-300 rounded-lg w-full text-gray-700"
                         />
-                    </FormGroup>
+                    </SelectGroup>
 
-                    <FormGroup label="Descrição do Evento">
+                    <SelectGroup label="Descrição do Evento">
                         <textarea
                             id="descricao"
                             rows="3"
@@ -107,9 +107,9 @@ function EventsTabContent() {
                             onChange={handleNovoEventoChange}
                             className="p-3 border border-gray-300 rounded-lg w-full resize-none text-gray-700"
                         />
-                    </FormGroup>
+                    </SelectGroup>
 
-                    <FormGroup label="Imagem de evento (URL - Opcional)">
+                    <SelectGroup label="Imagem de evento (URL - Opcional)">
                         <div className="flex flex-col md:flex-row items-stretch gap-3 w-full">
                             <div className="flex items-center flex-1 border border-gray-300 rounded-lg px-3">
                                 <Link className="w-5 h-5 text-gray-500 mr-2" />
@@ -137,7 +137,7 @@ function EventsTabContent() {
                                 Adicionar
                             </button>
                         </div>
-                    </FormGroup>
+                    </SelectGroup>
                 </div>
             </ConfigSection>
 
