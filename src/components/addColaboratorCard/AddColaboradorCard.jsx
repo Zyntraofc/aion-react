@@ -306,7 +306,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
             >
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
                 >
                     <X size={20} />
                 </button>
@@ -599,14 +599,14 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg transition hover:bg-gray-100"
+                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg transition hover:bg-gray-100 cursor-pointer"
                             >
                                 Cancelar
                             </button>
                             <button
                                 type="submit"
                                 disabled={loading || dataLoading || dataError}
-                                className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-white transition ${
+                                className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg text-white transition cursor-pointer ${
                                     (loading || dataLoading || dataError)
                                         ? DISABLED_COLOR
                                         : PRIMARY_COLOR
@@ -671,7 +671,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                                                 e.stopPropagation();
                                                 removeFile();
                                             }}
-                                            className="mt-2 px-4 py-2 text-sm text-red-600 hover:text-red-800 transition-colors"
+                                            className="mt-2 px-4 py-2 text-sm text-red-600 hover:text-red-800 transition-colors cursor-pointer"
                                         >
                                             Remover arquivo
                                         </button>
@@ -720,7 +720,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg transition hover:bg-gray-100"
+                                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg transition hover:bg-gray-100 cursor-pointer"
                             >
                                 Cancelar
                             </button>
@@ -755,7 +755,6 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                                 <li>• Colunas: Nome, CPF, RG, E-mail, Telefone, Matrícula, etc.</li>
                                 <li>• A primeira linha deve conter os cabeçalhos das colunas</li>
                                 <li>• Formato de datas: YYYY-MM-DD</li>
-                                <li>• <a href="/template-colaboradores.xlsx" className="underline font-medium">Baixar template</a></li>
                             </ul>
                         </div>
                     </div>
