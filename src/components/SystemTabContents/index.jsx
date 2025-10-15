@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ConfigCard from "../configCard";
 import ConfigSection from "../configSection";
-import FormGroup from "../FormGroup/index.jsx";
+import SelectGroup from "../selectGroup";
 import { Form } from "react-bootstrap";
 import { HardDrive } from "lucide-react";
 import ToggleSwitch from "../ToggleSwitch";
@@ -63,7 +63,7 @@ function SystemTabContents({ Version,  LastBackup }) {
         <ConfigCard title="Informações do Sistema" icon={<HardDrive className="w-6 h-6" />}>
             <ConfigSection title="Configurações de Fuso">
                 <Form>
-                    <FormGroup label="Fuso Horário">
+                    <SelectGroup label="Fuso Horário">
                         <select
                             id="horario"
                             value={horario}
@@ -74,7 +74,7 @@ function SystemTabContents({ Version,  LastBackup }) {
                             <option>Europe/UK</option>
                             <option>America/United States</option>
                         </select>
-                    </FormGroup>
+                    </SelectGroup>
                 </Form>
             </ConfigSection>
 

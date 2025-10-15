@@ -1,6 +1,6 @@
 import React from 'react';
 
-function FormGroup({ label, children, description, className = '' }) {
+function SelectGroup({ label, children, description, className = '' }) {
     return (
         <div className={`flex flex-col ${className}`}>
             <label className="text-sm font-medium text-gray-700 mb-1">
@@ -15,4 +15,4 @@ function FormGroup({ label, children, description, className = '' }) {
     );
 }
 
-export default FormGroup;
+export default SelectGroup;
