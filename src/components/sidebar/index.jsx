@@ -5,10 +5,11 @@ function Sidebar({ children, isCollapsed }) {
     return (
         <aside
             className={`
-                ${isCollapsed ? "w-20" : "w-64"} 
+                ${isCollapsed ? "w-24" : "w-64"} 
                 flex flex-col
                 sticky
                 m-6 top-6
+                mr-2
                 h-[calc(100vh-56px)]
                 transition-all duration-300
             `}
@@ -25,17 +26,29 @@ function Sidebar({ children, isCollapsed }) {
                 "
             >
                 {/* Header */}
-                <div className="flex items-center p-4 pb-2 gap-x-3">
-                    {!isCollapsed && (
-                        <>
-                            <img src={Logo} alt="Logo" />
-                            <div>
-                                <h3 className="font-semibold text-white">Sistema RH</h3>
-                                <h5 className="font-normal text-white">Gestão de pessoas</h5>
-                            </div>
-                        </>
-                    )}
+                <div
+                    className={`flex items-center p-4 pb-2 transition-all duration-300 
+                                 ${isCollapsed ? "justify-center" : "justify-start gap-x-3"}`}
+                >
+                    <img
+                        src={Logo}
+                        alt="Logo"
+                        className={`${isCollapsed ? "w-10 h-10" : "w-10 h-10"} transition-all duration-300`}
+                    />
+
+                    {/* Texto só aparece quando não está colapsado */}
+                    <div
+                        className={`
+                                  overflow-hidden transition-all duration-300
+                                  ${isCollapsed ? "w-0 opacity-0" : "w-40 opacity-100"}
+                                `}
+                    >
+                        <h3 className="font-semibold text-white whitespace-nowrap">Sistema RH</h3>
+                        <h5 className="font-normal text-white whitespace-nowrap">Gestão de pessoas</h5>
+                    </div>
                 </div>
+
+
 
                 {/* Linha de gradiente */}
                 <div className="flex justify-center my-2">
