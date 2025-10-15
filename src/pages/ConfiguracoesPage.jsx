@@ -8,7 +8,7 @@ import ConfiguracoesGeraisTabContent from '../components/ConfiguracoesGerais/ind
 import JustificativasTabContent from '../components/justificationsTabContent/index.jsx';
 import NotificationsTabContents from '../components/NotificationsTabContents/index.jsx';
 import SystemTabContents from '../components/SystemTabContents/index.jsx';
-import EventsTabContents from '../components/EventsTabContents/index.jsx';
+import EventsTabContents from '../components/eventsTabContents/index.jsx';
 
 
 function ConfiguracoesPage() {
