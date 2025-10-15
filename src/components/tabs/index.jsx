@@ -1,25 +1,22 @@
-// src/components/tabs/index.jsx
 import React from 'react';
 
 const Tabs = ({ tabs, activeTab, onTabChange }) => {
     return (
-        <div className="flex bg-indigo-500 rounded-xl p-2 mb-6 shadow-lg">
-            {tabs.map((tab) => {
-                const { id, label, count, Icon } = tab;
+        <div className="flex bg-tertiary rounded-xl p-2 border-b-2 border-gray-200">
+            {tabs.map(({ id, label, count = 0, Icon }) => {
                 const isActive = id === activeTab;
 
-                const tabClasses = `
-                    flex-1
-                    text-center
-                    py-2 px-4
-                    rounded-lg
-                    transition-colors
-                    flex items-center justify-center
-                    ${isActive
+                const tabClasses = [
+                    'flex-1',
+                    'text-center',
+                    'py-2 px-4',
+                    'rounded-lg',
+                    'transition-colors',
+                    'flex items-center justify-center',
+                    isActive
                         ? 'bg-white text-indigo-600 font-semibold cursor-default shadow'
-                        : 'text-indigo-100 hover:bg-indigo-600 cursor-pointer'
-                    }
-                `;
+                        : 'text-indigo-100 hover:bg-indigo-600 cursor-pointer',
+                ].join(' ');
 
                 return (
                     <button
@@ -28,16 +25,13 @@ const Tabs = ({ tabs, activeTab, onTabChange }) => {
                         onClick={() => onTabChange(id)}
                         disabled={isActive}
                     >
-                        <Icon className="w-5 h-5 mr-1.5" />
-
+                        {Icon && <Icon className="w-5 h-5 mr-1.5" />}
                         <span className="mr-2">{label}</span>
-
                         {count > 0 && (
                             <span
-                                className={`
-                                    text-xs font-bold px-2 py-0.5 rounded-full
-                                    ${isActive ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-600'}
-                                `}
+                                className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                                    isActive ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-600'
+                                }`}
                             >
                                 {count}
                             </span>
