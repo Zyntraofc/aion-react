@@ -7,7 +7,8 @@ import { ReactComponent as JustificationIcon } from "./justification.svg";
 import { ReactComponent as NotificationIcon } from "./notification.svg";
 import { ReactComponent as SettingsIcon } from "./settings.svg";
 import { ReactComponent as ReportIcon } from "./report.svg";
-
+import { ReactComponent as LearningIcon } from "./learning.svg";
+import { ReactComponent as FigureAionIcons } from "./figureaion.svg";
 const icons = {
     logo: <LogoIcon/>,
     home: <HomeIcon/>,
@@ -18,6 +19,8 @@ const icons = {
     notification: <NotificationIcon/>,
     settings: <SettingsIcon/>,
     report: <ReportIcon/>,
+    learning : <LearningIcon/>,
+    figure: <FigureAionIcons/>
 };
 
 export default icons;
