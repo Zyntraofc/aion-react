@@ -13,7 +13,7 @@ const initialSettings = {
     logAproved: false,
 };
 
-function SystemTabContents({ Version, Users, LastBackup }) {
+function SystemTabContents({ Version,  LastBackup }) {
     const [settings, setSettings] = useState(initialSettings);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
