@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Title from '../components/title';
-import QuickInformation from '../components/quickInformations';
 import NotificationsCard from '../components/notificationsCard';
+import QuickInformations from '../components/quickInformations';
 
 function NotificacoesPage() {
     const LOCAL_STORAGE_KEY_NOTIFICATIONS = 'configuracoesNotificacoes';
@@ -18,14 +18,14 @@ function NotificacoesPage() {
                 console.error("Erro ao ler deadline do localStorage:", error);
             }
         }
-        return 3; // valor padrão se não houver no localStorage
+        return 10;
     });
 
     function formatTimestamp(createdAt) {
       const date = new Date(createdAt);
       const now = new Date();
 
-      const diffTime = now - date; // diferença em ms
+      const diffTime = now - date;
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
       const hours = date.getHours().toString().padStart(2, "0");
@@ -64,7 +64,7 @@ function NotificacoesPage() {
         <div className="flex-1 flex flex-col">
             <Title title="Notificações" descrisão="Configurações de Notificações" />
             <div className="p-4">
-                <QuickInformation info1={7} info2={3} info3={5} info4={3} />
+              <QuickInformations/>
                 <div className="m-3">
                     <NotificationsCard
                         notifications={notifications}
