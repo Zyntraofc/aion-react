@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ConfigCard from "../configCard";
 import ConfigSection from "../configSection";
-import FormGroup from "../FormGroup";
+import FormGroup from "../FormGroup/index.jsx";
 import { Form } from "react-bootstrap";
 import { HardDrive } from "lucide-react";
 import ToggleSwitch from "../ToggleSwitch";
