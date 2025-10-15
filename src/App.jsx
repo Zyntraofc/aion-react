@@ -26,6 +26,7 @@ function AppContent() {
     const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(false);
 
+
     const routes = [
         { path: "/home", text: "Home", element: <HomePage />, icon: homeIcon },
         { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: dashboardIcon },
@@ -39,7 +40,6 @@ function AppContent() {
 
     return (
         <main className="flex min-h-screen bg-gray-100">
-            {/* Sidebar dinâmica */}
             <Sidebar>
                 {routes.map(({ path, text, icon }) => {
                     const isActive = location.pathname === path;
@@ -56,8 +56,9 @@ function AppContent() {
                 })}
             </Sidebar>
 
-            {/* Rotas */}
+
             <div className="flex-1">
+                <div className="" />
                 <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
                 <Routes>
                     <Route path="/" element={<Navigate to="/home" replace />} />
@@ -75,5 +76,6 @@ export default function App() {
         <Router>
             <AppContent />
         </Router>
+
     );
 }
