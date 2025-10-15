@@ -4,7 +4,7 @@ import ConfigCard from "../configCard";
 import ConfigSection from "../configSection";
 import ToggleSwitch from "../ToggleSwitch";
 import { Form } from 'react-bootstrap';
-import FormGroup from '../FormGroup';
+import SelectGroup from '../selectGroup';
 
 const LOCAL_STORAGE_KEY_NOTIFICATIONS = 'configuracoesNotificacoes';
 
@@ -130,7 +130,7 @@ function NotificationsTabContents() {
 
                 <ConfigSection title="Prazos de Notificação">
                     <Form>
-                        <FormGroup label="Dias antes do prazo (para notificações urgentes)">
+                        <SelectGroup label="Dias antes do prazo (para notificações urgentes)">
                             <Form.Control
                                 className="p-2 border border-gray-300 rounded-lg w-full"
                                 type="number"
@@ -138,7 +138,7 @@ function NotificationsTabContents() {
                                 value={daysBeforeDeadline}
                                 onChange={handleDeadlineChange}
                             />
-                        </FormGroup>
+                        </SelectGroup>
                     </Form>
                 </ConfigSection>
 
