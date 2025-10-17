@@ -147,7 +147,7 @@ function LoginPage() {
             </div>
 
             {/* Figura decorativa externa restaurada */}
-            <div className="flex items-center justify-center absolute left-30 top-10">
+            <div className=" absolute left-30 bottom-0">
                 {icons.figure}
             </div>
         </div>
