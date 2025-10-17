@@ -1,18 +1,20 @@
-import { deepGet } from './utils';
-
 const startEndpoint = 'https://ms-aion-jpa.onrender.com'
 export const registry = {
     justificativas: {
-        endpoint: startEndpoint+'/api/justificativas',
+        endpoint: startEndpoint+'/api/v1/ba/listar',
         columns: [
-            { id: 'employee', label: 'Funcionário', accessor: 'employee.name', sortable: true, visible: true },
-            { id: 'role', label: '', accessor: row => deepGet(row, 'employee.role') , sortable: false, visible: true },
-            { id: 'type', label: 'Tipo', accessor: 'type', sortable: true, visible: true },
-            { id: 'date', label: 'Data', accessor: row => (row.date ? new Date(row.date).toLocaleDateString() : ''), sortable: true, visible: true },
-            { id: 'status', label: 'Status', accessor: 'status', sortable: true, visible: true, render: (v) => `<Badge>${v}</Badge>` },
-            { id: 'priority', label: 'Prioridade', accessor: 'priority', visible: true },
-            { id: 'document', label: 'Documento', accessor: 'document.present', visible: true, render: (v, row) => (v ? 'Anexado' : 'Sem documento') },
-            { id: 'actions', label: 'Ações', accessor: null, visible: true, render: (v,row) => '...' },
+            { id: 'dataHoraBatida', label: 'Data/Hora', accessor: 'dataHoraBatida', visible: true,
+                render: (v) => v ? new Date(v).toLocaleString() : '',
+            },
+            { id: 'cdFuncionario', label: 'ID Funcionário', accessor: 'cdFuncionario', visible: true },
+            { id: 'justificativa', label: 'Justificativa', accessor: 'justificativa', visible: true,
+                render: (v) => v ? 'Sim' : 'Não',
+            },
+            { id: 'status', label: 'Status', accessor: 'status', visible: true,
+                render: (v) => `<Badge>${v === '1' ? 'Válida' : 'Pendente'}</Badge>`,
+            },
+            { id: 'situacao', label: 'Situação', accessor: 'situacao', visible: true },
+            { id: 'actions', label: 'Ações', accessor: null, visible: true, render: (v, row) => '...' },
         ],
     },
 
