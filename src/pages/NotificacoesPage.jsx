@@ -1,79 +1,121 @@
-import React, { useState } from 'react';
-import Title from '../components/title';
-import NotificationsCard from '../components/notificationsCard';
-import QuickInformations from '../components/quickInformations';
+// NotificacoesPage.jsx
+import React, { useState, useEffect } from "react";
+import Title from "../components/title";
+import NotificationsCard from "../components/notificationsCard";
+import QuickInformations from "../components/quickInformations";
+import axios from "axios";
+import { Spinner, Alert } from "react-bootstrap";
 
 function NotificacoesPage() {
-    const LOCAL_STORAGE_KEY_NOTIFICATIONS = 'configuracoesNotificacoes';
+  const LOCAL_STORAGE_KEY_NOTIFICATIONS = "configuracoesNotificacoes";
+  const API_URL = "https://ms-aion-mongodb.onrender.com/api/v1/notificacao/listar";
+  const LOGGED_EMPLOYEE_ID = 12345;
 
-    const [daysBeforeDeadline, setDaysBeforeDeadline] = useState(() => {
-        const savedData = localStorage.getItem(LOCAL_STORAGE_KEY_NOTIFICATIONS);
-        if (savedData) {
-            try {
-                const parsedData = JSON.parse(savedData);
-                if (parsedData.daysBeforeDeadline !== undefined) {
-                    return parsedData.daysBeforeDeadline;
-                }
-            } catch (error) {
-                console.error("Erro ao ler deadline do localStorage:", error);
-            }
-        }
-        return 10;
-    });
+  const [notifications, setNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    function formatTimestamp(createdAt) {
-      const date = new Date(createdAt);
-      const now = new Date();
+  const config = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_NOTIFICATIONS)) || {};
+  const daysBeforeDeadline = config.daysBeforeDeadline || 10;
 
-      const diffTime = now - date;
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const cards = [
+    { id: 1, title: "Novas Justificativas", icon: "BellIcon", color: "blue" },
+    { id: 2, title: "Novas Notificacoes", icon: "BellIcon", color: "yellow" },
+    { id: 3, title: "Novos Atrasos", icon: "BellIcon", color: "red" },
+  ];
 
-      const hours = date.getHours().toString().padStart(2, "0");
-      const minutes = date.getMinutes().toString().padStart(2, "0");
-
-      if (diffDays === 0) return `Hoje, ${hours}:${minutes}`;
-      if (diffDays === 1) return `Ontem, ${hours}:${minutes}`;
-      return date.toLocaleDateString() + `, ${hours}:${minutes}`;
-    }
+  const isUrgent = (notification, urgentDeadlineDays) => {
+    if (!notification.rawDate) return false;
+    const notifDate = new Date(notification.rawDate);
+    const now = new Date();
+    const diffDays = Math.ceil((notifDate - now) / (1000 * 60 * 60 * 24));
+    return diffDays <= urgentDeadlineDays; // verdadeiro se faltar X dias ou menos
+  };
 
 
-    const notifications = [
-        {
-            id: 1,
-            title: "Novo colaborador cadastrado",
-            message: "Um novo colaborador foi adicionado ao sistema.",
-            isRead: false,
-            isArchived: false,
-            createdAt: "2025-10-10T09:30:00",
-            timestamp: formatTimestamp("2025-10-10T09:30:00"),
-            targetPath: "/colaboradores"
-        },
-        {
-            id: 2,
-            title: "Backup concluído",
-            message: "O backup automático foi finalizado com sucesso.",
-            isRead: false,
-            isArchived: false,
-            createdAt: "2025-10-10T22:00:00",
-            timestamp: formatTimestamp("2025-10-10T22:00:00"),
-            targetPath: "/configuracoes"
-        }
-    ];
+  const formatTimestamp = (dateStr) => {
+    if (!dateStr) return "Sem data";
+    const date = new Date(dateStr);
+    if (isNaN(date)) return "Data inválida";
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    if (diffDays === 0) return `Hoje, ${hours}:${minutes}`;
+    if (diffDays === 1) return `Ontem, ${hours}:${minutes}`;
+    return `${date.toLocaleDateString("pt-BR")}, ${hours}:${minutes}`;
+  };
 
-    return (
-        <div className="flex-1 flex flex-col">
-            <Title title="Notificações" descrisão="Configurações de Notificações" />
-            <div className="p-4">
-              <QuickInformations/>
-                <div className="m-3">
-                    <NotificationsCard
-                        notifications={notifications}
-                        urgentDeadlineDays={daysBeforeDeadline}
-                    />
-                </div>
-            </div>
-        </div>
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        const data = response.data;
+
+        const userNotifications = (data || []).filter(
+          (notif) =>
+            notif.lcdfuncionario === LOGGED_EMPLOYEE_ID ||
+            notif.cdFuncionario === LOGGED_EMPLOYEE_ID
+        );
+
+        const formatted = userNotifications.map((notif) => ({
+          id: notif.cdNotificacao || notif.ccdnotificacao || notif._id || Math.random().toString(36).substring(2, 9),
+          title: notif.titulo || "Sem título",
+          message: notif.descricao || notif.cdescricao || "Sem descrição",
+          timestamp: formatTimestamp(notif.data),
+          rawDate: notif.data,
+          isRead: false,
+          isUrgent: isUrgent(notif, daysBeforeDeadline),
+        }));
+
+        setNotifications(formatted);
+      } catch (err) {
+        console.error("Erro ao buscar notificações:", err.response?.data || err);
+        setError("Não foi possível carregar as notificações do servidor.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const handleMarkAsRead = (idToUpdate) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === idToUpdate ? { ...n, isRead: true } : n))
     );
+  };
+
+  return (
+    <div className="flex-1 flex flex-col p-4">
+
+
+      <div className="p-3">
+        {isLoading && (
+          <div className="text-center mt-5">
+            <Spinner animation="border" variant="primary" />
+            <p className="mt-2 text-muted">Carregando notificações...</p>
+          </div>
+        )}
+
+        {error && (
+          <Alert variant="danger" className="mt-4 text-center">
+            {error}
+          </Alert>
+        )}
+
+        {!isLoading && !error && (
+          <div className="m-3">
+            <NotificationsCard
+              notifications={notifications}
+              urgentDeadlineDays={daysBeforeDeadline}
+              onMarkAsRead={handleMarkAsRead}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default NotificacoesPage;

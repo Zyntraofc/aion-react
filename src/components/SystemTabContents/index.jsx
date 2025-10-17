@@ -4,7 +4,7 @@ import ConfigSection from "../configSection";
 import SelectGroup from "../selectGroup";
 import { Form } from "react-bootstrap";
 import { HardDrive } from "lucide-react";
-import ToggleSwitch from "../ToggleSwitch";
+import ToggleSwitch from "../customToggleSwitch";
 
 const LOCAL_STORAGE_KEY_SYSTEM = 'configuracoesSistema';
 const initialSettings = {
