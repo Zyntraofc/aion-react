@@ -22,15 +22,14 @@ const AtividadeRecente = () => {
   }, []);
 
   return (
-    <div className="p-4 rounded-2xl border border-gray-300 shadow-sm">
-    <div className="flex items-center space-x-2">
-      <HistoryIcon className="text-blue-500 mb-2" />
-      <h2 className="text-xl font-bold mb-3">Atividade Recente</h2>
+    <div className="p-6 rounded-2xl bg-white shadow-sm">
+    <div className="flex items-center space-x-2 ">
+      <h2 className="font-semibold mb-3">Atividade Recente</h2>
         </div>
       {solicitacoes.map((item) => (
         <div
           key={item.id}
-          className="p-4.5 mb-4 rounded-xl bg-white  flex justify-between items-center"
+          className="p-4.5 mb-4 rounded-xl bg-secondary-100  flex justify-between items-center"
         >
           <div>
             <p className="font-semibold">{item.usuario}</p>
@@ -42,8 +41,8 @@ const AtividadeRecente = () => {
           <span
             className={`px-2 py-1 text-sm rounded-full ${
               item.status === "Aprovada"
-                ? " border border-green-200 text-green-700"
-                : "bg-red-400 text-white border border-red-200"
+                ? " border border-green-200 text-success"
+                : "bg-danger text-white border border-red-200"
             }`}
           >
             {item.status}

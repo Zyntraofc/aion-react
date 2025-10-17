@@ -3,8 +3,14 @@ import React from "react";
 
 function QuickActions() {
     return(
-        <div className="flex flex-col p-6 space-y-4 rounded-2xl border border-gray-300 shadow-sm ">
-            <h1 className="text-2xl font-bold text-gray-800">Ações Rápidas</h1>
+        <div className="flex flex-col p-6 space-y-4 rounded-2xl border border-transparent shadow-sm "
+             style={{ background: `
+                                  linear-gradient(white, white) padding-box,
+                                  radial-gradient(circle at top right, rgba(255,255,255,0.9), rgba(122,133,255,0.6)) border-box,
+                                  radial-gradient(circle at bottom left, rgba(255,255,255,0.9), rgba(122,133,255,0.6)) border-box
+                                `,
+             }}>
+            <h2 className="font-semibold text-gray-800">Ações Rápidas</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                 {/* Card de Ação - Nova Justificativa */}
