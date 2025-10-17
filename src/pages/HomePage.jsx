@@ -9,7 +9,7 @@ import Recent from "../components/recent/index.jsx";
 export default function HomePage() {
     return (
         <div className="flex-1 flex flex-col">
-            <Title title="Visão Geral" descrisão={"Visão geral das atividades de RH"}/>
+            <Title title="Visão Geral" descricao={"Visão geral das atividades de RH"}/>
             <QuickInformations cards={[
                 {title: "Justificativas Pendentes", value: 47, color:"yellow"},
                 {title: "Justificativas Aprovadas",  value: 47, color: "green"},
@@ -17,11 +17,11 @@ export default function HomePage() {
                 {title: "Taxa de Aprovação", value: 47 }
             ]}
             />
-            <div className="flex flex-1 p-4 space-x-4">
-                <div className="p-4 w-3/5">
+            <div className="flex flex-1 pt-2 space-x-4">
+                <div className="w-3/5">
                     <QuickActions />
                 </div>
-                <div className="p-4 w-2/5">
+                <div className="w-2/5">
                     <Recent />
                 </div>
             </div>
