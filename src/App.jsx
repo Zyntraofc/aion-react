@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ColaboradoresPage from "./pages/ColaboradoresPage.jsx";
@@ -12,9 +12,12 @@ import Sidebar  from "./components/sidebar";
 import { SidebarItem } from "./components/sidebarItem";
 import Header from "./components/header/index.jsx";
 import icons from "./assets/icons/index.jsx";
+import AnimatedPage from "./pages/AnimatedPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
+import SignupPage from "./pages/SignupPage.jsx";
 
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {AnimatePresence} from "framer-motion";
 
 function AppContent() {
     const location = useLocation();
@@ -34,7 +37,7 @@ function AppContent() {
         return () => unsubscribe();
     }, [auth]);
 
-    // Enquanto o Firebase ainda não respondeu
+    // 1. Enquanto o Firebase ainda não respondeu
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen text-gray-600">
@@ -43,12 +46,37 @@ function AppContent() {
         );
     }
 
-    // Se não estiver logado → vai pro Login
+    // 2. Se não estiver logado → Rotas Públicas
     if (!isAuthenticated) {
-        return <LoginPage />;
+        // Usa location.pathname como key para forçar a transição
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center font-sans bg-gray-100 relative">
+                <div className="fixed left-30 -bottom-2 ">
+                    {icons.figure}
+                </div>
+                <AnimatePresence mode="wait">
+                    <Routes location={location} key={location.pathname}>
+                        {/* Rota para o Login */}
+                        <Route
+                            path="/login"
+                            element={<AnimatedPage><LoginPage /></AnimatedPage>}
+                        />
+
+                        {/* Rota para o Cadastro */}
+                        <Route
+                            path="/signup"
+                            element={<AnimatedPage><SignupPage /></AnimatedPage>}
+                        />
+
+                        {/* Qualquer outra rota (incluindo "/") redireciona para o Login */}
+                        <Route path="*" element={<Navigate to="/login" replace />} />
+                    </Routes>
+                </AnimatePresence>
+            </div>
+        );
     }
 
-    // Se estiver logado → mostra o resto do app
+    // 3. Se estiver logado → Rotas Privadas (App Principal)
     const routes = [
         { path: "/home", text: "Home", element: <HomePage />, icon: icons.home },
         { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: icons.dashboard },
@@ -69,7 +97,6 @@ function AppContent() {
                     return (
                         <Link key={path} to={path}>
                             <SidebarItem
-                                // CORREÇÃO: Passando o ícone JSX diretamente
                                 icon={icon}
                                 text={text}
                                 active={isActive}
@@ -85,7 +112,14 @@ function AppContent() {
                 <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
                 <div className="p-3 pt-0">
                     <Routes>
+                        {/* Se logado, bloqueia acesso direto a /login e /signup */}
+                        <Route path="/login" element={<Navigate to="/home" replace />} />
+                        <Route path="/signup" element={<Navigate to="/home" replace />} />
+
+                        {/* Rota raiz redireciona para a Home */}
                         <Route path="/" element={<Navigate to="/home" replace />} />
+
+                        {/* Rotas principais do aplicativo */}
                         {routes.map(({ path, element }) => (
                             <Route key={path} path={path} element={element} />
                         ))}
