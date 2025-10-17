@@ -9,7 +9,7 @@ function OnboardingPage() {
         <div className='flex-1 flex flex-col'>
             <Title title="Dashboard" descricao={"Acompanhe o processo de integração dos novos colaboradores"}/>
             <QuickInformations cards={[
-                {title: "Novos fucionários", value: 2, icon: icons.onboarding},
+                {title: "Novos funcionários", value: 2, icon: icons.onboarding},
                 {title: "Em treinamento",  value: 1, color: "yellow"},
                 {title: "Pendente avaliação",  value: 0 },
                 {title: "Concluídos", value: 0 , color: "green"}
