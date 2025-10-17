@@ -37,7 +37,7 @@ function JustificativasPendentes() {
   ];
 
   return (
-    <div className="p-6 rounded-2xl border border-gray-300 shadow-sm">
+    <div className="p-6 rounded-2xl border border-gray-300 bg-gray-50 shadow-sm">
       <div className="flex items-center space-x-2 mb-4">
         <ClockIcon size={20} className="text-blue-500" />
         <h1 className="text-xl font-bold text-gray-800">Justificativas Pendentes</h1>
@@ -89,7 +89,7 @@ function JustificativasPendentes() {
                 <button className="px-3 py-1 text-xs rounded-md bg-indigo-500 text-white hover:bg-indigo-600 transition">
                   Informações
                 </button>
-                <button className="p-1.5 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition">
+                <button className="p-1.5 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition" onClick={() => {}}>
                   <CheckIcon size={16} />
                 </button>
                 <button className="p-1.5 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition">

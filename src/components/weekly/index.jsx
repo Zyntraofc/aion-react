@@ -2,7 +2,7 @@ import { TrendingUp, TrendingDown, ArrowBigUpDash } from "lucide-react";
 
 function Weekly({ numberRequestsAproved, numberRequestsRejected, aprovedPercentage }) {
   return (
-    <div className="p-6 rounded-2xl border border-gray-300 shadow-sm h-95">
+    <div className="p-6 rounded-2xl border border-gray-300 shadow-sm h-95 bg-gray-50">
       <div className="flex items-center space-x-2 mb-4">
         <TrendingUp size={20} className="text-blue-500"/>
         <h1 className="text-xl font-bold text-gray-800">Resumo Semanal</h1>
