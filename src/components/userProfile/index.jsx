@@ -1,8 +1,15 @@
 import React from 'react';
 import { useState } from 'react';
+import {getAuth, signOut} from "firebase/auth";
 
 function UserProfile({ foto, cargo, nome, email }) {
   const [open, setOpen] = useState(false);
+
+  function logOut(){
+      const auth = getAuth()
+      signOut(auth);
+  }
+
   return (
     <div className="relative flex items-center gap-4 bg-[#3A47FF] rounded-full px-3 py-2 text-white">
       <img
@@ -29,7 +36,7 @@ function UserProfile({ foto, cargo, nome, email }) {
           <button className="block w-full px-4 py-2 text-left hover:bg-purple-50">
             Configurações
           </button>
-          <button className="block w-full px-4 py-2 text-left text-red-500 hover:bg-purple-50">
+          <button onClick={logOut()} className="block w-full px-4 py-2 text-left text-red-500 hover:bg-purple-50">
             Sair
           </button>
         </div>
