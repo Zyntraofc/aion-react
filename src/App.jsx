@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ColaboradoresPage from "./pages/ColaboradoresPage.jsx";
@@ -8,7 +8,7 @@ import JustificativasPage from "./pages/JustificativasPage.jsx";
 import NotificacoesPage from "./pages/NotificacoesPage.jsx";
 import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
 import ReportPage from "./pages/ReportPage.jsx";
-import Sidebar from "./components/sidebar";
+import Sidebar  from "./components/sidebar";
 import { SidebarItem } from "./components/sidebarItem";
 import Header from "./components/header/index.jsx";
 import icons from "./assets/icons/index.jsx";
@@ -55,6 +55,7 @@ function AppContent() {
         { path: "/colaboradores", text: "Colaboradores", element: <ColaboradoresPage />, icon: icons.colaborator },
         { path: "/onboarding", text: "Onboarding", element: <OnboardingPage />, icon: icons.onboarding },
         { path: "/justificativas", text: "Justificativas", element: <JustificativasPage />, icon: icons.justification },
+        { path: "/relatorios", text: "Relatórios", element: <ReportPage />, icon: icons.report },
         { path: "/notificacoes", text: "Notificações", element: <NotificacoesPage />, icon: icons.notification },
         { path: "/configuracoes", text: "Configurações", element: <ConfiguracoesPage />, icon: icons.settings },
     ];
@@ -64,11 +65,11 @@ function AppContent() {
             {/* Sidebar */}
             <Sidebar isCollapsed={isCollapsed}>
                 {routes.map(({ path, text, icon }) => {
-                    const isActive =
-                        location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+                    const isActive = location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
                     return (
                         <Link key={path} to={path}>
                             <SidebarItem
+                                // CORREÇÃO: Passando o ícone JSX diretamente
                                 icon={icon}
                                 text={text}
                                 active={isActive}
@@ -79,7 +80,7 @@ function AppContent() {
                 })}
             </Sidebar>
 
-            {/* Conteúdo principal */}
+            {/* Conteúdo Principal */}
             <div className="flex-1 overflow-y-auto">
                 <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
                 <div className="p-3 pt-0">
