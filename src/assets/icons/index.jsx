@@ -9,8 +9,9 @@ import { ReactComponent as SettingsIcon } from "./settings.svg";
 import { ReactComponent as ReportIcon } from "./report.svg";
 import { ReactComponent as LearningIcon } from "./learning.svg";
 import { ReactComponent as FigureAionIcons } from "./figureaion.svg";
+import { ReactComponent as DemonstrationIcon } from "./demonstration.svg";
 const icons = {
-    logo: <LogoIcon/>,
+    logo: LogoIcon,
     home: <HomeIcon/>,
     dashboard: <DashboardIcon/>,
     colaborator: <ColaboratorIcon/>,
@@ -20,7 +21,8 @@ const icons = {
     settings: <SettingsIcon/>,
     report: <ReportIcon/>,
     learning : <LearningIcon/>,
-    figure: <FigureAionIcons/>
+    figure: <FigureAionIcons/>,
+    demonstration: <DemonstrationIcon/>
 };
 
 export default icons;
