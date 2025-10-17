@@ -1,5 +1,8 @@
 ## 📌 Descrição
-Explique brevemente o que foi implementado ou corrigido.
+Explique brevemente o que foi implementado ou corrigido, incluindo:
+- Motivação: Por que essa mudança foi necessária?
+- Abordagem: Como a mudança foi implementada?
+- Impacto: Quais efeitos ou melhorias são esperados?
 
 ## 📝 Checklist
 - [ ] O código foi testado
