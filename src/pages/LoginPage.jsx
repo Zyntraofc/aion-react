@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// Importar Link, além de useNavigate
+import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebaseConfig.js";
 import icons from "../assets/icons/index.jsx";
 import logo from "../assets/appIcon.png";
 import mockupDemonstracao from "../assets/demonstration.png";
+
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -29,11 +31,9 @@ function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center font-sans">
+        <div className="w-full flex items-center justify-center font-sans">
             <div className="grid grid-cols-5 rounded-3xl shadow-2xl z-10 max-w-4xl w-full bg-gray-100 p-4 gap-4">
-
                 <div className="bg-white rounded-2xl col-span-3 flex flex-col justify-center px-5 py-5">
-
                     <header className="mb-10 flex justify-between items-center">
                         <div className="flex items-center space-x-2">
                             <div className="bg-white rounded-xl w-10 h-10 flex items-center justify-center">
@@ -46,15 +46,15 @@ function LoginPage() {
                             <h1 className="text- font-semibold text-primary">aion</h1>
                         </div>
 
-                        {/* Link Cadastre-se */}
+                        {/* Link Cadastre-se: AGORA USA <Link> DO REACT-ROUTER-DOM */}
                         <p className="text-sm text-gray-500">
                             Não tem uma conta?
-                            <a
-                                href="#signup"
+                            <Link // <-- MUDANÇA: USANDO <Link>
+                                to="/signup" // <-- MUDANÇA: APONTA PARA A ROTA /signup
                                 className="text-primary hover:text-indigo-700 font-medium ml-1 transition"
                             >
                                 Cadastre-se
-                            </a>
+                            </Link>
                         </p>
                     </header>
                     <div className="pl-10 pr-10">
@@ -81,7 +81,7 @@ function LoginPage() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="seu.email@exemplo.com"
                                     required
-                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-tertiary transition"
                                 />
                             </div>
 
@@ -98,18 +98,18 @@ function LoginPage() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Digite sua senha"
                                     required
-                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-tertiary transition"
                                 />
                             </div>
 
                             {/* Link Esqueceu a senha? */}
                             <div className="text-right">
-                                <a
-                                    href="#forgot"
-                                    className="text-sm text-indigo-500 hover:text-indigo-600 transition"
+                                <Link // É uma boa prática usar <Link> aqui também
+                                    to="/forgot-password"
+                                    className="text-sm text-primary hover:text-indigo-600 transition"
                                 >
                                     Esqueceu a senha?
-                                </a>
+                                </Link>
                             </div>
 
                             <button
@@ -119,7 +119,7 @@ function LoginPage() {
                                 className={`w-full py-3 mt-4 mb-6 font-semibold rounded-2xl transition duration-200 shadow-md ${
                                     loading
                                         ? "bg-gray-400 cursor-not-allowed"
-                                        : "bg-gradient-to-r from-indigo-500 to-indigo-400 hover:from-indigo-600 hover:to-indigo-500 text-white"
+                                        : "bg-gradient-to-r from-primary to-tertiary hover:from-indigo-600 hover:to-primary text-white"
                                 }`}
                             >
                                 {loading ? "Entrando..." : "Entrar"}
@@ -128,27 +128,21 @@ function LoginPage() {
                     </div>
 
                 </div>
-
-
-                {/* === LADO DIREITO: CONTEÚDO PROMOCIONAL (2/5) === */}
-                <div className="bg-gradient-to-br from-indigo-600 to-indigo-400 flex flex-col items-center  text-white pt-10 rounded-2xl col-span-2">
+                <div className="bg-gradient-to-br from-primary to-tertiary text-white rounded-2xl col-span-2">
                     {/* Conteúdo principal */}
-                    <h3 className="text-xl font-semibold leading-snug">
-                        Entenda o tempo e transforme <br/>a presença das suas equipes!
-                    </h3>
-                    <div className=" bottom-0 left-0 w-[85%] h-[50%]">
-                        <img
-                            src={mockupDemonstracao}
-                            alt="Mockup cortado"
-                            className="w-full h-full object-cover transform "
-                        />
+                    <div className="pt-20 h-full flex flex-col items-center justify-between ">
+                        <h3 className="text-xl font-semibold leading-snug">
+                            Entenda o tempo e transforme <br/>a presença das suas equipes!
+                        </h3>
+                        <div className=" bottom-0 left-0 w-[100%] h-[80%]">
+                            <img
+                                src={mockupDemonstracao}
+                                alt="Mockup cortado"
+                                className="w-full h-full object-cover "
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Figura decorativa externa restaurada */}
-            <div className=" absolute left-30 bottom-0">
-                {icons.figure}
             </div>
         </div>
     );
