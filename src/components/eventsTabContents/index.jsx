@@ -3,8 +3,11 @@ import ConfigCard from '../configCard';
 import ConfigSection from '../configSection';
 import SelectGroup from '../selectGroup';
 import { PlusCircle, Trash2, Calendar, Link } from 'lucide-react';
+import axios from 'axios';
 
-const LOCAL_STORAGE_KEY_EVENTOS = 'listaDeEventos';
+const API_URL_INSERT = 'https://ms-aion-mongodb.onrender.com/api/v1/evento/inserir';
+const API_URL_LIST = 'https://ms-aion-mongodb.onrender.com/api/v1/evento/listar';
+const API_URL_DELETE = 'https://ms-aion-mongodb.onrender.com/api/v1/evento/remover'; // se tiver delete no backend
 
 function EventsTabContent() {
     const [eventos, setEventos] = useState([]);
@@ -15,21 +18,36 @@ function EventsTabContent() {
         uri: '',
     });
     const [isFormValid, setIsFormValid] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
+    const CD_EMPRESA = 1; // Substitua pelo ID real da empresa
+
+    // Carregar eventos do backend
     useEffect(() => {
-        const savedEvents = localStorage.getItem(LOCAL_STORAGE_KEY_EVENTOS);
-        if (savedEvents) {
+        const fetchEventos = async () => {
             try {
-                setEventos(JSON.parse(savedEvents));
-            } catch (error) {
-                console.error("Erro ao carregar eventos do localStorage:", error);
+                setLoading(true);
+                const response = await axios.get(API_URL_LIST);
+                setEventos(response.data || []);
+            } catch (err) {
+                console.error(err);
+                setError("Não foi possível carregar os eventos.");
+            } finally {
+                setLoading(false);
             }
-        }
+        };
+        fetchEventos();
     }, []);
 
+    // Validação do formulário
     useEffect(() => {
         const { data, titulo, descricao } = novoEvento;
-        setIsFormValid(data.trim() !== '' && titulo.trim().length >= 3 && descricao.trim().length >= 10);
+        setIsFormValid(
+            data.trim() !== '' &&
+            titulo.trim().length >= 3 &&
+            descricao.trim().length >= 10
+        );
     }, [novoEvento]);
 
     const handleNovoEventoChange = (e) => {
@@ -37,26 +55,36 @@ function EventsTabContent() {
         setNovoEvento(prev => ({ ...prev, [id]: value }));
     };
 
-    const handleAddEvento = () => {
+    const handleAddEvento = async () => {
         if (!isFormValid) return;
 
-        const novo = {
-            cdEvento: Date.now().toString(),
-            ...novoEvento,
-            uri: novoEvento.uri.trim(),
-        };
+        try {
+            const payload = {
+                cdEmpresa: CD_EMPRESA,
+                titulo: novoEvento.titulo,
+                descricao: novoEvento.descricao,
+                uri: novoEvento.uri || null,
+                data: novoEvento.data ? novoEvento.data + ':00' : null, // adiciona segundos
+            };
 
-        const updatedEvents = [...eventos, novo];
-        setEventos(updatedEvents);
-        localStorage.setItem(LOCAL_STORAGE_KEY_EVENTOS, JSON.stringify(updatedEvents));
+            const response = await axios.post(API_URL_INSERT, payload);
 
-        setNovoEvento({ data: '', titulo: '', descricao: '', uri: '' });
+            setEventos(prev => [...prev, response.data]);
+            setNovoEvento({ data: '', titulo: '', descricao: '', uri: '' });
+        } catch (err) {
+            console.error(err);
+            setError("Não foi possível adicionar o evento.");
+        }
     };
 
-    const handleRemoveEvento = (cdEvento) => {
-        const updatedEvents = eventos.filter(evento => evento.cdEvento !== cdEvento);
-        setEventos(updatedEvents);
-        localStorage.setItem(LOCAL_STORAGE_KEY_EVENTOS, JSON.stringify(updatedEvents));
+    const handleRemoveEvento = async (cdEvento) => {
+        try {
+           await axios.delete(`${API_URL_DELETE}/${cdEvento}`);
+            setEventos(prev => prev.filter(e => e.cdEvento !== cdEvento));
+        } catch (err) {
+            console.error(err);
+            setError("Não foi possível remover o evento.");
+        }
     };
 
     const formatEventDate = (datetime) => {
@@ -142,8 +170,10 @@ function EventsTabContent() {
             </ConfigSection>
 
             <ConfigSection title="Próximos Eventos Cadastrados">
-                {eventos.length === 0 ? (
-                    <p className="text-gray-500 italic">Nenhum evento cadastrado. Use o formulário acima para adicionar.</p>
+                {loading ? (
+                    <p className="text-gray-500 italic">Carregando eventos...</p>
+                ) : eventos.length === 0 ? (
+                    <p className="text-gray-500 italic">Nenhum evento cadastrado.</p>
                 ) : (
                     <div className="space-y-4">
                         {eventos.map((evento) => (
@@ -175,6 +205,8 @@ function EventsTabContent() {
                     </div>
                 )}
             </ConfigSection>
+
+            {error && <p className="text-red-500 mt-2">{error}</p>}
         </ConfigCard>
     );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ConfigCard from '../configCard';
 import SelectGroup from '../selectGroup';
-import ToggleSwitch from '../ToggleSwitch';
+import ToggleSwitch from '../customToggleSwitch';
 import ConfigSection from '../configSection';
 import { Edit, Trash2, PlusCircle, Clock, FileText, UserCheck, CheckCircle, XCircle } from 'lucide-react';
 

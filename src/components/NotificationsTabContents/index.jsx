@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BellIcon } from "lucide-react";
 import ConfigCard from "../configCard";
 import ConfigSection from "../configSection";
-import ToggleSwitch from "../ToggleSwitch";
+import ToggleSwitch from "../customToggleSwitch";
 import { Form } from 'react-bootstrap';
 import SelectGroup from '../selectGroup';
 
