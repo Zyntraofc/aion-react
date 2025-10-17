@@ -1,10 +1,8 @@
-// src/components/ConfigCard/index.jsx
-
 import React from 'react';
 
 function ConfigCard({ title, icon, children }) {
   return (
-    <div className="bg-white shadow-xl rounded-xl p-6 mb-6 border-t-4 border-indigo-500">
+    <div className="bg-white shadow-xl rounded-xl p-6 mb-6 mt-6">
 
       <div className="flex items-center space-x-3 mb-4 border-b pb-3">
         {icon && (

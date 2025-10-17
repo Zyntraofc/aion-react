@@ -16,6 +16,7 @@ function AppContent() {
     const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(false);
 
+
     const routes = [
         { path: "/home", text: "Home", element: <HomePage />, icon: icons.home },
         { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: icons.dashboard },
@@ -68,5 +69,6 @@ export default function App() {
         <Router>
             <AppContent />
         </Router>
+
     );
 }
