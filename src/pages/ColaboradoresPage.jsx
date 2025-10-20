@@ -18,9 +18,8 @@ function ColaboradoresPage() {
                     title="Colaboradores"
                     descricao="Gerencie informações dos funcionários"
                 />
-                <div className="bg-tertiary w-32 h-8 rounded-lg flex items-center justify-center text-center text-white hover:bg-tertiary/80 cursor-pointer " onClick={() => setOpenCard(true)} >
-                    <Plus size={16} className="mr-2"/>
-                    <p>Novo</p>
+                <div className="bg-tertiary p-4 mr-4 h-8 rounded-lg flex items-center justify-center text-center text-white hover:bg-tertiary/80 cursor-pointer " onClick={() => setOpenCard(true)} >
+                    <p>Novo Colaborador</p>
                 </div>
             </div>
 
@@ -35,7 +34,7 @@ function ColaboradoresPage() {
             <div className="bg-white p-4 mt-1 mr-4 shadow-md rounded-2xl flex flex-col gap-2">
                 <SearchBar/>
                 <GenericList resource="colaboradores"
-                             visibleColumns={['nomeCompleto','email','cdCargo','ativo','actions']}
+                             visibleColumns={['nomeCompleto','matricula','cdCargo','ativo','actions']}
                 />
             </div>
             <AddColaboradorCard
