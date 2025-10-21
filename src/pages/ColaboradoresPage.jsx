@@ -18,7 +18,7 @@ function ColaboradoresPage() {
                     title="Colaboradores"
                     descricao="Gerencie informações dos funcionários"
                 />
-                <div className="bg-tertiary w-32 h-8 rounded-lg flex items-center justify-center text-center text-white " onClick={() => setOpenCard(true)} >
+                <div className="bg-tertiary w-32 h-8 rounded-lg flex items-center justify-center text-center text-white hover:bg-tertiary/80 cursor-pointer " onClick={() => setOpenCard(true)} >
                     <Plus size={16} className="mr-2"/>
                     <p>Novo</p>
                 </div>

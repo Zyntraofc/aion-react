@@ -65,10 +65,10 @@ export default function GenericList({ resource, visibleColumns, columnOverrides 
             </table>
 
             <div className="pagination justify-between">
-                <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1}>Anterior</button>
+                <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className='cursor-pointer hover:opacity-80'>Anterior</button>
                 <span>{page} / {Math.ceil((total || 0) / 10)}</span>
-                <button onClick={() => setPage(page + 1)} disabled={page * 10 >= total}>Próxima</button>
-                <button onClick={() => refresh()}>Refresh</button>
+                <button onClick={() => setPage(page + 1)} disabled={page * 10 >= total} className='cursor-pointer hover:opacity-80'>Próxima</button>
+                <button onClick={() => refresh()} className='cursor-pointer hover:opacity-80'>Refresh</button>
             </div>
         </div>
     );
