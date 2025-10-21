@@ -8,6 +8,7 @@ import JustificativasPage from "./pages/JustificativasPage.jsx";
 import NotificacoesPage from "./pages/NotificacoesPage.jsx";
 import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
 import ReportPage from "./pages/ReportPage.jsx";
+import ReclamacoesPage from "./pages/ReclamacoesPage.jsx";
 import Sidebar  from "./components/sidebar";
 import { SidebarItem } from "./components/sidebarItem";
 import Header from "./components/header/index.jsx";
@@ -23,21 +24,21 @@ function AppContent() {
         { path: "/colaboradores", text: "Colaboradores", element: <ColaboradoresPage />, icon: icons.colaborator },
         { path: "/onboarding", text: "Onboarding", element: <OnboardingPage />, icon: icons.onboarding },
         { path: "/justificativas", text: "Justificativas", element: <JustificativasPage />, icon: icons.justification },
+        { path: "/reclamacoes", text: "Reclamações", element: <ReclamacoesPage />, icon: icons.complaint },
         { path: "/relatorios", text: "Relatórios", element: <ReportPage />, icon: icons.report },
-        { path: "/notificacoes", text: "Notificações", element: <NotificacoesPage />, icon: icons.notification },
+        { path: "/notificacoes", text: "Notificar", element: <NotificacoesPage />, icon: icons.notification },
         { path: "/configuracoes", text: "Configurações", element: <ConfiguracoesPage />, icon: icons.settings },
+
     ];
 
     return (
         <main className="flex min-h-screen bg-gray-100">
-            {/* Sidebar dinâmica */}
             <Sidebar isCollapsed={isCollapsed}>
                 {routes.map(({ path, text, icon }) => {
                     const isActive = location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
                     return (
                         <Link key={path} to={path}>
                             <SidebarItem
-                                // CORREÇÃO: Passando o ícone JSX diretamente
                                 icon={icon}
                                 text={text}
                                 active={isActive}

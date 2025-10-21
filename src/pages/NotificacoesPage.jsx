@@ -5,7 +5,6 @@ import NotificationsCard from "../components/notificationsCard";
 import QuickInformations from "../components/quickInformations";
 import EventsTabContent from "../components/eventsTabContents";
 import Tabs from "../components/tabs"; // ✅ importando o seu Tabs
-import axios from "axios";
 import { Spinner, Alert } from "react-bootstrap";
 
 function NotificacoesPage() {
