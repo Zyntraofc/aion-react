@@ -3,13 +3,20 @@ import QuickInformations from "../components/quickInformations/index.jsx";
 import Title from "../components/title/index.jsx";
 import GenericList from "../components/GenericList/GenericList.jsx";
 import SearchBar from "../components/searchBar/index.jsx";
-import { Plus } from "lucide-react";
 import AddColaboradorCard from "../components/addColaboratorCard/AddColaboradorCard.jsx";
+import ViewEmployeeModal from "../components/colaborator/viewColaboratorCard";
 
 
 function ColaboradoresPage() {
 
-    const [openCard, setOpenCard] = useState(false);
+    const [openCardAdd, setopenCardAdd] = useState(false);
+    const [openCardView, setopenCardView] = useState(false);
+    const [selectedEmployee, setSelectedEmployee] = useState(null); // Estado para armazenar o colaborador selecionado
+
+    const handleViewEmployee = (employee) => {
+        setSelectedEmployee(employee);
+        setopenCardView(true);
+    };
 
     return (
         <div className='flex-1 flex flex-col'>
@@ -18,7 +25,8 @@ function ColaboradoresPage() {
                     title="Colaboradores"
                     descricao="Gerencie informações dos funcionários"
                 />
-                <div className="bg-tertiary p-4 mr-4 h-8 rounded-lg flex items-center justify-center text-center text-white hover:bg-tertiary/80 cursor-pointer " onClick={() => setOpenCard(true)} >
+                <div className="bg-tertiary p-4 mr-4 h-8 rounded-lg flex items-center justify-center text-center text-white hover:bg-tertiary/80 cursor-pointer "
+                     onClick={() => setopenCardAdd(true)} >
                     <p>Novo Colaborador</p>
                 </div>
             </div>
@@ -35,12 +43,21 @@ function ColaboradoresPage() {
                 <SearchBar/>
                 <GenericList resource="colaboradores"
                              visibleColumns={['nomeCompleto','matricula','cdCargo','ativo','actions']}
+                             onViewEmployee={handleViewEmployee} // Passa a função como prop
                 />
             </div>
             <AddColaboradorCard
-                open={openCard}
-                onClose={() => setOpenCard(false)}
+                open={openCardAdd}
+                onClose={() => setopenCardAdd(false)}
                 onSuccess={() => console.log("Colaborador criado com sucesso!")}
+            />
+            <ViewEmployeeModal
+                open={openCardView}
+                onClose={() => {
+                    setopenCardView(false);
+                    setSelectedEmployee(null); // Limpa o colaborador ao fechar
+                }}
+                employee={selectedEmployee} // Passa o colaborador selecionado
             />
         </div>
     );
