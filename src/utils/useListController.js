@@ -37,7 +37,9 @@ export function useListController(resource, options = {}) {
         };
         try {
             const qs = buildQuery(q);
-            const res = await fetch(`${resourceCfg.endpoint}${qs}`, { signal: abortRef.current.signal });
+            const res = await fetch(`${resourceCfg.endpoint}${qs}`, {
+                signal: abortRef.current.signal
+            });
             if (!res.ok) {
                 const txt = await res.text();
                 throw new Error(txt || res.statusText);
@@ -55,6 +57,7 @@ export function useListController(resource, options = {}) {
             setLoading(false);
         }
     }, [resourceCfg, page, perPage, sort, filters, extraQuery]);
+
 
     useEffect(() => {
         fetchData();
