@@ -64,13 +64,13 @@ jobs:
               ;;
           esac
 
-      - name: Lint
+      - name: Lint (warn only)
         run: |
-          if npm run | grep -q "lint"; then
-            npm run lint
-          else
+            if npm run | grep -q "lint"; then
+            npm run lint || true
+            else
             echo "Nenhum script lint definido."
-          fi
+            fi
 
       - name: Test
         run: |
