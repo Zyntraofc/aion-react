@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { X, UserPlus, Loader, Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import axios from "axios";
 import Tabs from '../tabs'; // Ajuste o caminho se necessário

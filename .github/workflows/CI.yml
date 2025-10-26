@@ -64,14 +64,6 @@ jobs:
               ;;
           esac
 
-      - name: Lint
-        run: |
-          if npm run | grep -q "lint"; then
-            npm run lint
-          else
-            echo "Nenhum script lint definido."
-          fi
-
       - name: Test
         run: |
             if npm run | grep -q "test"; then

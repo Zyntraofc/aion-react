@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { X, User, Mail, Phone, MapPin, Calendar, IdCard, Building, Briefcase, Users, Clock, Cake } from "lucide-react";
 import axios from "axios";
 
