@@ -1,8 +1,7 @@
-const proxyEndpoint = 'http://localhost:3001'; // sem /proxy
-
+const startEndpoint = 'https://ms-aion-jpa.onrender.com'
 export const registry = {
     justificativas: {
-        endpoint: proxyEndpoint + '/api/v1/batida/listar',
+        endpoint: startEndpoint+'/api/v1/batida/listar',
         columns: [
             { id: 'dataHoraBatida', label: 'Data/Hora', accessor: 'dataHoraBatida', visible: true,
                 render: (v) => v ? new Date(v).toLocaleString() : '',
@@ -12,7 +11,7 @@ export const registry = {
                 render: (v) => v ? 'Sim' : 'Não',
             },
             { id: 'status', label: 'Status', accessor: 'status', visible: true,
-                render: (v) => v === '1' ? 'Válida' : 'Pendente',
+                render: (v) => `<Badge>${v === '1' ? 'Válida' : 'Pendente'}</Badge>`,
             },
             { id: 'situacao', label: 'Situação', accessor: 'situacao', visible: true },
             { id: 'actions', label: 'Ações', accessor: null, visible: true, render: (v, row) => '...' },
@@ -20,7 +19,7 @@ export const registry = {
     },
 
     colaboradores: {
-        endpoint: proxyEndpoint + '/api/v1/funcionario/listar',
+        endpoint: startEndpoint + '/api/v1/funcionario/listar',
         columns: [
             {
                 id: 'nomeCompleto',
@@ -41,6 +40,7 @@ export const registry = {
                 accessor: 'cdCargo',
                 visible: true,
                 render: (value, row) => {
+                    // Isso será substituído quando tivermos os dados dos cargos
                     return value || "Não definido";
                 }
             },
@@ -50,6 +50,7 @@ export const registry = {
                 accessor: 'cdDepartamento',
                 visible: true,
                 render: (value, row) => {
+                    // Isso será substituído quando tivermos os dados dos departamentos
                     return value || "Não definido";
                 }
             },
@@ -65,7 +66,7 @@ export const registry = {
                 label: 'Faltas (mês)',
                 accessor: 'faltas',
                 visible: true,
-                render: (v) => v ?? '0'
+                render: (v) => v ?? '0' // Placeholder - você precisará de um endpoint para faltas
             },
             {
                 id: 'actions',
@@ -75,5 +76,15 @@ export const registry = {
                 render: (v, row) => '...'
             },
         ],
-    }
+    },
+
+    onboarding: {
+        endpoint: startEndpoint+'/api/onboardings',
+        columns: [
+            { id: 'candidate', label: 'Candidato', accessor: 'candidate.name', visible: true },
+            { id: 'startDate', label: 'Data Início', accessor: 'startDate', visible: true },
+            { id: 'status', label: 'Status', accessor: 'status', visible: true },
+            { id: 'actions', label: 'Ações', accessor: null, visible: true, render: (v,row) => '...' },
+        ],
+    },
 };

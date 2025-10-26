@@ -36,9 +36,17 @@ export function useListController(resource, options = {}) {
             ...extraQuery,
         };
         try {
+            const user = import.meta.env.VITE_API_USER;
+            const pass = import.meta.env.VITE_API_PASS;
+            const basicAuth = 'Basic ' + btoa(`${user}:${pass}`);
+
             const qs = buildQuery(q);
             const res = await fetch(`${resourceCfg.endpoint}${qs}`, {
-                signal: abortRef.current.signal
+                signal: abortRef.current.signal,
+                headers: {
+                    'Authorization': basicAuth,
+                    'Content-Type': 'application/json'
+                }
             });
             if (!res.ok) {
                 const txt = await res.text();
@@ -57,7 +65,6 @@ export function useListController(resource, options = {}) {
             setLoading(false);
         }
     }, [resourceCfg, page, perPage, sort, filters, extraQuery]);
-
 
     useEffect(() => {
         fetchData();
