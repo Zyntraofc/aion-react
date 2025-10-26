@@ -3,6 +3,7 @@ import { useListController } from "../../utils/useListController.js";
 import { deepGet } from "../../utils/utils.js";
 import { MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
 
+
 export default function GenericList({
                                         resource,
                                         visibleColumns = ['nomeCompleto', 'cdMatricula', 'cdCargo', 'cdDepartamento', 'ativo', 'faltas', 'actions'],
