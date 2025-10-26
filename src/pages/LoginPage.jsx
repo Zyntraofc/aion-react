@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebaseConfig.js";
-import icons from "../assets/icons/index.jsx";
 import logo from "../assets/appIcon.png";
 import mockupDemonstracao from "../assets/demonstration.png";
 

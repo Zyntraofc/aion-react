@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { X, User, Mail, Phone, MapPin, Calendar, IdCard, Building, Briefcase, Users, Clock, Cake } from "lucide-react";
 import axios from "axios";
 
@@ -10,7 +10,6 @@ const API_GESTORES = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/listar
 const API_ENDERECOS = "https://ms-aion-jpa.onrender.com/api/v1/endereco/listar";
 
 export default function ViewEmployeeModal({ open, onClose, employee }) {
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [employeeData, setEmployeeData] = useState(null);
 

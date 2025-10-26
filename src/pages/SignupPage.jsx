@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { motion, AnimatePresence } from "framer-motion";
+// import { motion, AnimatePresence } from "framer-motion";
 import { auth } from "../utils/firebaseConfig.js";
 import logo from "../assets/appIcon.png";
 import mockupDemonstracao from "../assets/demonstration.png";
