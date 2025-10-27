@@ -22,7 +22,7 @@ function JustificativasPage() {
                 <SearchBar/>
                 <GenericList
                     resource="justificativas"
-
+                    actionType="justificativa" // ← Esta prop ativa o modo justificativa
                     visibleColumns={[
                         'dataHoraBatida',
                         'cdFuncionario',

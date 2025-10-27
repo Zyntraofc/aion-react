@@ -43,22 +43,14 @@ export const registry = {
             {
                 id: 'cdCargo',
                 label: 'Cargo',
-                accessor: 'cdCargo',
+                accessor: 'nome',
                 visible: true,
-                render: (value, row) => {
-                    // Isso será substituído quando tivermos os dados dos cargos
-                    return value || "Não definido";
-                }
             },
             {
                 id: 'cdDepartamento',
                 label: 'Setor',
-                accessor: 'cdDepartamento',
+                accessor: 'nome',
                 visible: true,
-                render: (value, row) => {
-                    // Isso será substituído quando tivermos os dados dos departamentos
-                    return value || "Não definido";
-                }
             },
             {
                 id: 'ativo',

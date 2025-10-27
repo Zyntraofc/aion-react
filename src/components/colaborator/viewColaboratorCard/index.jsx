@@ -244,11 +244,6 @@ export default function ViewEmployeeModal({
 
                 {/* Content */}
                 <div className="p-6">
-                    {error && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                            {error}
-                        </div>
-                    )}
 
                     {dataLoading && (
                         <div className="flex items-center justify-center py-8">
@@ -356,17 +351,6 @@ export default function ViewEmployeeModal({
                                                           <option value="3">Outro</option>
                                                       </select>
                                                   ) : sexoMap[employeeData.sexo] || "Não informado"} />
-
-                                        <InfoItem icon={<Users size={16} />} label="Dependentes"
-                                                  value={isEditing ? (
-                                                      <input
-                                                          type="number"
-                                                          name="dependentes"
-                                                          value={employeeData.dependentes || 0}
-                                                          onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
-                                                      />
-                                                  ) : employeeData.dependentes || 0} />
                                     </div>
                                 </div>
 
@@ -428,6 +412,16 @@ export default function ViewEmployeeModal({
                                                           className="border border-gray-300 rounded-lg p-2 w-full"
                                                       />
                                                   ) : employeeData.horasExtras || 0} />
+                                        <InfoItem icon={<Users size={16} />} label="Dependentes"
+                                                  value={isEditing ? (
+                                                      <input
+                                                          type="number"
+                                                          name="dependentes"
+                                                          value={employeeData.dependentes || 0}
+                                                          onChange={handleInputChange}
+                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                      />
+                                                  ) : employeeData.dependentes || 0} />
                                     </div>
                                 </div>
                             </div>
@@ -480,7 +474,11 @@ export default function ViewEmployeeModal({
                                     </div>
                                 </div>
                             </div>
-
+                            {error && (
+                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                    {error}
+                                </div>
+                            )}
                             {/* Botões */}
                             <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
                                 {isEditing ? (

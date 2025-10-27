@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ColaboradoresPage from "./pages/ColaboradoresPage.jsx";
-import OnboardingPage from "./pages/OnboardingPage.jsx";
 import JustificativasPage from "./pages/JustificativasPage.jsx";
 import NotificacoesPage from "./pages/NotificacoesPage.jsx";
 import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
@@ -82,7 +81,6 @@ function AppContent() {
         { path: "/home", text: "Home", element: <HomePage />, icon: icons.home },
         { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: icons.dashboard },
         { path: "/colaboradores", text: "Colaboradores", element: <ColaboradoresPage />, icon: icons.colaborator },
-        { path: "/onboarding", text: "Onboarding", element: <OnboardingPage />, icon: icons.onboarding },
         { path: "/justificativas", text: "Justificativas", element: <JustificativasPage />, icon: icons.justification },
         { path: "/reclamacoes", text: "Reclamações", element: <ReclamacoesPage />, icon: icons.complaint },
         { path: "/relatorios", text: "Relatórios", element: <ReportPage />, icon: icons.report },

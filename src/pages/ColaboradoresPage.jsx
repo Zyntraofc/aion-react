@@ -63,7 +63,15 @@ function ColaboradoresPage() {
                 <SearchBar/>
                 <GenericList
                     resource="colaboradores"
-                    visibleColumns={['cdMatricula', 'nomeCompleto', 'email', 'cdCargo', 'ativo']}
+                    visibleColumns={[
+                        'nomeCompleto',
+                        'cdMatricula',
+                        'cdCargo',
+                        'cdDepartamento',
+                        'ativo',
+                        'faltas',
+                        'actions'
+                    ]}
                     onViewEmployee={handleViewEmployee}
                     onEditEmployee={handleEditEmployee}
                     onDeleteEmployee={handleDeleteEmployee}

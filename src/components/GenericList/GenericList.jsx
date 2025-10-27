@@ -1,8 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useListController } from "../../utils/useListController.js";
 import { deepGet } from "../../utils/utils.js";
-import { MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
-
+import { MoreHorizontal, Eye, Edit, Trash2, CheckCircle } from "lucide-react";
 
 export default function GenericList({
                                         resource,
@@ -11,7 +10,8 @@ export default function GenericList({
                                         initialFilters = {},
                                         onViewEmployee,
                                         onEditEmployee,
-                                        onDeleteEmployee
+                                        onDeleteEmployee,
+                                        actionType = "default"
                                     }) {
     const {
         data,
@@ -25,6 +25,15 @@ export default function GenericList({
     } = useListController(resource, { initialFilters });
 
     const [openMenuId, setOpenMenuId] = useState(null);
+    const itemsPerPage = 10;
+
+    // Dados paginados para exibição
+    const paginatedData = useMemo(() => {
+        if (!data || data.length === 0) return [];
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return data.slice(startIndex, endIndex);
+    }, [data, page, itemsPerPage]);
 
     // Configuração das colunas
     const columns = useMemo(() => {
@@ -67,7 +76,7 @@ export default function GenericList({
         setOpenMenuId(null);
 
         switch (action) {
-            case "visualizar":
+            case "Analisar":
                 onViewEmployee?.(row);
                 break;
             case "editar":
@@ -76,8 +85,33 @@ export default function GenericList({
             case "deletar":
                 onDeleteEmployee?.(row);
                 break;
+            case "analisar":
+                onViewEmployee?.(row);
+                break;
             default:
                 console.warn("Ação desconhecida:", action);
+        }
+    };
+
+    // Função para determinar o texto e estilo do botão baseado no status
+    const getActionButtonConfig = (row) => {
+        const status = row.status || row.dsStatus || "";
+        const isPendente = status.toLowerCase().includes("pendente");
+
+        if (isPendente) {
+            return {
+                text: "Analisar",
+                className: "bg-blue-600 hover:bg-blue-700 text-white",
+                icon: <CheckCircle size={16} className="mr-2" />,
+                action: "analisar"
+            };
+        } else {
+            return {
+                text: "Analisar",
+                className: "border hover:bg-gray-200 text-black",
+                icon: <Eye size={16} className="mr-2" />,
+                action: "Analisar"
+            };
         }
     };
 
@@ -102,158 +136,194 @@ export default function GenericList({
             case "nomeCompleto":
                 return (
                     <div className="flex flex-col min-w-0">
-            <span className="font-semibold text-gray-900 truncate">
-              {value || "—"}
-            </span>
+                        <span className="font-medium text-gray-900 truncate">
+                            {value || "—"}
+                        </span>
                         {row.email && (
-                            <span className="text-gray-400 text-xs truncate">
-                {row.email}
-              </span>
+                            <span className="text-gray-500 text-sm truncate">
+                                {row.email}
+                            </span>
                         )}
                     </div>
                 );
 
             case "cdMatricula":
                 return (
-                    <span className="font-mono text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-200">
-            {value || "—"}
-          </span>
+                    <span className="font-mono text-sm text-gray-700 font-medium">
+                        {value || "—"}
+                    </span>
                 );
 
             case "cdCargo":
                 return (
                     <div className="text-gray-700">
-                        {value ? `ID: ${value}` : "Não definido"}
+                        {value || "Não definido"}
                     </div>
                 );
 
             case "cdDepartamento":
                 return (
-                    <div className="text-gray-700">
-                        {value ? `ID: ${value}` : "Não definido"}
+                    <div className="text-gray-700 border-1 pl-3 pr-3 rounded-xl border-gray-200">
+                        {value ? (value === "(T)" || value === "(RH)" ? value : value) : "Não definido"}
                     </div>
                 );
 
             case "ativo":
-                const isActive = value === true || value === 1 || value === "1";
+                const isActive = value === true || value === 1 || value === "1" || value === "Ativo";
                 return (
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                    <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
                         isActive
-                            ? "bg-green-100 text-green-800 border-green-200"
-                            : "bg-red-100 text-red-800 border-red-200"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                     }`}>
-            <span className={`w-2 h-2 rounded-full mr-2 ${
-                isActive ? "bg-green-500" : "bg-red-500"
-            }`}></span>
                         {isActive ? "Ativo" : "Inativo"}
-          </span>
+                    </span>
                 );
 
             case "faltas":
                 const faltasCount = parseInt(value) || 0;
                 return (
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
-                        faltasCount > 0
-                            ? "bg-red-100 text-red-800 border-red-200"
-                            : "bg-green-100 text-green-800 border-green-200"
-                    }`}>
-            {faltasCount > 0 && (
-                <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-            )}
+                    <span className="text-gray-700 font-medium">
                         {faltasCount}
-          </span>
+                    </span>
                 );
+
+            case "status":
+                if (actionType === "justificativa") {
+                    const status = value || "";
+                    const isPendente = status.toLowerCase().includes("pendente");
+                    const isAprovada = status.toLowerCase().includes("aprovada");
+                    const isRecusada = status.toLowerCase().includes("recusada") || status.toLowerCase().includes("incorrente");
+
+                    let statusClass = "bg-gray-100 text-gray-800";
+                    if (isPendente) statusClass = "bg-yellow-100 text-yellow-800";
+                    if (isAprovada) statusClass = "bg-green-100 text-green-800";
+                    if (isRecusada) statusClass = "bg-red-100 text-red-800";
+
+                    return (
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass}`}>
+                            {status}
+                        </span>
+                    );
+                }
+                break;
+
+            case "prioridade":
+                if (actionType === "justificativa") {
+                    const prioridade = value || "";
+                    const isAlta = prioridade.toLowerCase().includes("alta") || prioridade === "SED";
+                    const isMedia = prioridade.toLowerCase().includes("média") || prioridade.toLowerCase().includes("media");
+                    const isBaixa = prioridade.toLowerCase().includes("baixa");
+
+                    let prioridadeClass = "bg-gray-100 text-gray-800";
+                    if (isAlta) prioridadeClass = "bg-red-100 text-red-800";
+                    if (isMedia) prioridadeClass = "bg-yellow-100 text-yellow-800";
+                    if (isBaixa) prioridadeClass = "bg-green-100 text-green-800";
+
+                    return (
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${prioridadeClass}`}>
+                            {prioridade}
+                        </span>
+                    );
+                }
+                break;
+
+            case "documento":
+                if (actionType === "justificativa") {
+                    const documento = value || "";
+                    const hasDocument = documento.toLowerCase().includes("anexado");
+
+                    return (
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            hasDocument
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                        }`}>
+                            {documento}
+                        </span>
+                    );
+                }
+                break;
 
             default:
                 return (
                     <span className="text-gray-700">
-            {value ?? "—"}
-          </span>
+                        {value ?? "—"}
+                    </span>
                 );
         }
+
+        // Fallback para colunas não tratadas especificamente
+        return (
+            <span className="text-gray-700">
+                {value ?? "—"}
+            </span>
+        );
     };
 
     // Componente de paginação
     const Pagination = () => {
-        const totalPages = Math.ceil(total / 10);
-        const startItem = (page - 1) * 10 + 1;
-        const endItem = Math.min(page * 10, total);
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        const startItem = (page - 1) * itemsPerPage + 1;
+        const endItem = Math.min(page * itemsPerPage, data.length);
 
         return (
-            <div className="flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-t border-gray-200 bg-gray-50 gap-3">
-                <div className="text-sm text-gray-700">
+            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-gray-200 bg-white gap-3">
+                <div className="text-sm text-gray-600">
                     Mostrando <span className="font-medium">{startItem}</span> a{" "}
                     <span className="font-medium">{endItem}</span> de{" "}
                     <span className="font-medium">{total}</span> resultados
                 </div>
 
-                <div className="flex items-center space-x-1">
-                    <button
-                        onClick={() => setPage(1)}
-                        disabled={page <= 1}
-                        className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        title="Primeira página"
-                    >
-                        ⏮️
-                    </button>
-
+                <div className="flex items-center space-x-2">
                     <button
                         onClick={() => setPage(page - 1)}
                         disabled={page <= 1}
-                        className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-700"
                     >
                         Anterior
                     </button>
 
-                    <span className="text-sm text-gray-700 px-3 py-1 bg-white border border-gray-300 rounded-md">
-            Página {page} de {totalPages}
-          </span>
+                    <span className="text-sm text-gray-700 px-3 py-2">
+                    Página {page} de {totalPages}
+                </span>
 
                     <button
                         onClick={() => setPage(page + 1)}
                         disabled={page >= totalPages}
-                        className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-700"
                     >
                         Próxima
                     </button>
 
                     <button
-                        onClick={() => setPage(totalPages)}
-                        disabled={page >= totalPages}
-                        className="px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        title="Última página"
-                    >
-                        ⏭️
-                    </button>
-
-                    <button
                         onClick={() => refresh()}
-                        className="ml-2 px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                        className="ml-2 px-3 py-2 text-sm bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors text-gray-700"
                         title="Atualizar dados"
                     >
-                        🔄
+                        Atualizar
                     </button>
                 </div>
             </div>
         );
     };
 
-    // Loading state
+    // Loading state - PRIMEIRO: sempre verificar loading antes de qualquer coisa
     if (loading) {
         return (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                     <span className="ml-3 text-gray-600">Carregando colaboradores...</span>
                 </div>
             </div>
         );
     }
 
-    // Error state
+    // Error state - SEGUNDO: verificar erro depois do loading
     if (error) {
         return (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="text-center py-8">
                     <div className="text-red-500 text-lg font-semibold mb-2">
                         Erro ao carregar dados
@@ -263,7 +333,7 @@ export default function GenericList({
                     </div>
                     <button
                         onClick={() => refresh()}
-                        className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                     >
                         Tentar novamente
                     </button>
@@ -272,10 +342,10 @@ export default function GenericList({
         );
     }
 
-    // Empty state
-    if (!data || data.length === 0) {
+    // Empty state - TERCEIRO: só verificar dados vazios depois de confirmar que não está loading e não há erro
+    if (!paginatedData || paginatedData.length === 0) {
         return (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="text-center py-12">
                     <div className="text-gray-400 text-lg mb-2">
                         Nenhum colaborador encontrado
@@ -285,7 +355,7 @@ export default function GenericList({
                     </div>
                     <button
                         onClick={() => refresh()}
-                        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                     >
                         Recarregar
                     </button>
@@ -294,9 +364,9 @@ export default function GenericList({
         );
     }
 
-    // Main table
+    // Main table - ÚLTIMO: só renderizar a tabela se não está loading, não há erro e há dados
     return (
-        <div className="generic-list bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="generic-list bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
@@ -304,7 +374,7 @@ export default function GenericList({
                         {columns.map((col) => (
                             <th
                                 key={col.id}
-                                className="py-4 px-4 font-semibold text-gray-700 text-sm uppercase tracking-wider whitespace-nowrap"
+                                className="py-3 px-6 font-semibold text-gray-700 text-sm tracking-normal whitespace-nowrap"
                             >
                                 {col.label || col.id}
                             </th>
@@ -313,7 +383,7 @@ export default function GenericList({
                     </thead>
 
                     <tbody>
-                    {data.map((row, index) => {
+                    {paginatedData.map((row, index) => {
                         const rowId = row.cdFuncionario ?? row.cdMatricula ?? row.id ?? index;
                         const isMenuOpen = openMenuId === rowId;
 
@@ -325,12 +395,31 @@ export default function GenericList({
                                 {columns.map((col) => {
                                     // Coluna de Ações
                                     if (col.id === "actions") {
+                                        // Modo justificativa - botões específicos
+                                        if (actionType === "justificativa") {
+                                            const buttonConfig = getActionButtonConfig(row);
+                                            return (
+                                                <td key="actions" className="py-3 px-6">
+                                                    <div className="flex justify-end">
+                                                        <button
+                                                            onClick={() => handleAction(buttonConfig.action, row)}
+                                                            className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${buttonConfig.className}`}
+                                                        >
+                                                            {buttonConfig.icon}
+                                                            {buttonConfig.text}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            );
+                                        }
+
+                                        // Modo padrão - menu de três pontinhos
                                         return (
-                                            <td key="actions" className="py-3 px-4 whitespace-nowrap">
-                                                <div className="flex justify-end">
+                                            <td key="actions" className="py-3 px-6">
+                                                <div className="flex">
                                                     <div className="relative">
                                                         <button
-                                                            className="menu-button p-2 rounded-full hover:bg-gray-200 transition-colors duration-200"
+                                                            className="menu-button p-2 rounded hover:bg-gray-200 transition-colors duration-200"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 setOpenMenuId(isMenuOpen ? null : rowId);
@@ -342,11 +431,11 @@ export default function GenericList({
                                                         {isMenuOpen && (
                                                             <div className="action-menu absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10 overflow-hidden">
                                                                 <button
-                                                                    onClick={() => handleAction("visualizar", row)}
+                                                                    onClick={() => handleAction("Analisar", row)}
                                                                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                                                                 >
                                                                     <Eye size={16} className="mr-3 text-blue-500" />
-                                                                    Visualizar
+                                                                    Analisar
                                                                 </button>
                                                                 <button
                                                                     onClick={() => handleAction("editar", row)}
@@ -374,7 +463,7 @@ export default function GenericList({
 
                                     // Demais colunas
                                     return (
-                                        <td key={col.id} className="py-4 px-4 whitespace-nowrap">
+                                        <td key={col.id} className="py-4 px-6 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 {renderCellValue(col, row)}
                                             </div>
