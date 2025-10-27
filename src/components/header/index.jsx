@@ -1,11 +1,8 @@
-import NotificationIcon from "../notificationsIcon"
 import UserProfile from "../userProfile";
-import SearchBar from "../searchBar";
 import { useState } from 'react';
 import ToogleSidebar from "../toogleSidebar";
 
 function Header({ onToggle }) {
-    const [notificationCount] = useState(30);
     const [nome] = useState('Raphaela')
     const [cargo] = useState('Auxiliar de TI')
     const [email] = useState('raphaela@gmail.com')
@@ -16,7 +13,6 @@ function Header({ onToggle }) {
             <div className="flex items-center justify-between p-4 mt-1">
                 <div className="flex items-center space-x-4">
                     <ToogleSidebar onToggle={onToggle} />
-                    <NotificationIcon number={notificationCount} />
                 </div>
                 <div className="flex items-center">
                     <UserProfile nome={nome} cargo={cargo} email={email} foto={foto}/>
