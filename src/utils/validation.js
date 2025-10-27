@@ -121,7 +121,7 @@ export const validateStep = (stepNumber, fields) => {
 };
 
 // Nova função para validação individual em tempo real
-export const validateField = (fieldName, value, stepNumber) => {
+export const validateField = (fieldName, value) => {
     if (!value || !value.toString().trim()) {
         return "Obrigatório";
     }

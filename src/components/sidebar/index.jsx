@@ -1,5 +1,4 @@
 import Logo from '../../assets/icons/logo_aion.svg';
-import { useState } from "react";
 
 function Sidebar({ children, isCollapsed }) {
     return (

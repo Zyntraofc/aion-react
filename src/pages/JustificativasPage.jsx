@@ -2,7 +2,6 @@ import React from 'react';
 import Headers from "../components/header/index.jsx";
 import Title from "../components/title/index.jsx";
 import QuickInformations from "../components/quickInformations/index.jsx";
-import icons from "../assets/icons/index.jsx";
 import SearchBar from "../components/searchBar/index.jsx";
 import GenericList from "../components/GenericList/GenericList.jsx";
 

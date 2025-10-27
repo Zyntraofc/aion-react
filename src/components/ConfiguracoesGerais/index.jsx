@@ -3,7 +3,7 @@ import ConfigCard from '../configCard/index.jsx';
 import { Settings, Clock, Building2 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'configuracoesGeraisEmpresa';
-const CNPJ_REGEX = /^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}\-?\d{2}$/;
+const CNPJ_REGEX = /^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/;
 
 function ConfiguracoesGeraisTabContent() {
     const initialData = {

@@ -72,7 +72,7 @@ export function useListController(resource, options = {}) {
         perPage,
         total,
         setPage,
-        setPerPage: (n) => { /* optional: implement */ },
+        setPerPage: () => { /* optional: implement */ },
         setSort,
         setFilters,
         refresh: () => fetchData({}),

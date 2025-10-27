@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - workflow
+  pull_request:
+    branches:
+      - main
+      - workflow
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Detect package manager
+        id: pkg
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
+          elif [ -f yarn.lock ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+          elif [ -f package-lock.json ]; then
+            echo "manager=npm-ci" >> $GITHUB_OUTPUT
+          else
+            echo "manager=npm" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install dependencies
+        run: |
+          case "${{ steps.pkg.outputs.manager }}" in
+            pnpm)
+              corepack enable
+              pnpm install --frozen-lockfile
+              ;;
+            yarn)
+              yarn install --frozen-lockfile
+              ;;
+            npm-ci)
+              npm ci
+              ;;
+            npm)
+              npm install
+              ;;
+          esac
+
+      - name: Lint (warn only)
+        run: |
+            if npm run | grep -q "lint"; then
+            npm run lint || true
+            else
+            echo "Nenhum script lint definido."
+            fi
+
+      - name: Test
+        run: |
+            if npm run | grep -q "test"; then
+              npm test -- --watch=false
+            else
+              echo "Nenhum script de testes definido."
+            fi
+
+      - name: Build
+        run: |
+          if npm run | grep -q "build"; then
+            npm run build
+          else
+            echo "Nenhum script build definido."
+          fi
+
+      - name: Upload dist artifact (PR only)
+        if: success() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.node-version }}
+          path: dist
+          if-no-files-found: warn

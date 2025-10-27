@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { X, UserPlus, Loader, Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import axios from "axios";
 import Tabs from '../tabs'; // Ajuste o caminho se necessário
@@ -147,7 +147,8 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
         formData.append('file', file);
 
         try {
-            const response = await axios.post(API_IMPORT_EXCEL, formData, {
+            // const response = 
+            await axios.post(API_IMPORT_EXCEL, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
