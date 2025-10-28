@@ -72,11 +72,16 @@ export default function GenericList({
 
     // Manipulador de ações
     const handleAction = (action, row) => {
-        console.log("Ação:", action, "Colaborador:", row);
+        console.log("🔍 Ação disparada:", action, "Dados:", row);
         setOpenMenuId(null);
 
         switch (action) {
             case "Analisar":
+                console.log("📝 Chamando onViewEmployee (Analisar)");
+                onViewEmployee?.(row);
+                break;
+            case "analisar": // ← Este é o importante para o modo justificativa
+                console.log("📝 Chamando onViewEmployee (analisar)");
                 onViewEmployee?.(row);
                 break;
             case "editar":
@@ -85,16 +90,40 @@ export default function GenericList({
             case "deletar":
                 onDeleteEmployee?.(row);
                 break;
-            case "analisar":
-                onViewEmployee?.(row);
-                break;
             default:
                 console.warn("Ação desconhecida:", action);
         }
     };
 
     // Função para determinar o texto e estilo do botão baseado no status
+    // No GenericList, na função getActionButtonConfig - VERIFIQUE se está assim:
+    // No GenericList, SUBSTITUA a função getActionButtonConfig por esta:
     const getActionButtonConfig = (row) => {
+        // Para o modo justificativa, SEMPRE mostrar "Analisar" independente do status
+        if (actionType === "justificativa") {
+            const status = row.status || row.dsStatus || "";
+            const isPendente = status.toLowerCase().includes("pendente");
+
+            if (isPendente) {
+                return {
+                    text: "Analisar",
+                    className: "bg-blue-600 hover:bg-blue-700 text-white",
+                    icon: <CheckCircle size={16} className="mr-2" />,
+                    action: "analisar"
+                };
+            } else {
+                // Mesmo para justificativas já analisadas, mostrar "Analisar"
+                // mas com estilo diferente para indicar que já foi vista
+                return {
+                    text: "Analisar",
+                    className: "hover:bg-gray-200 text-black",
+                    icon: <Eye size={16} className="mr-2" />,
+                    action: "analisar"
+                };
+            }
+        }
+
+        // Para outros tipos (modo padrão), manter a lógica original
         const status = row.status || row.dsStatus || "";
         const isPendente = status.toLowerCase().includes("pendente");
 
@@ -107,7 +136,7 @@ export default function GenericList({
             };
         } else {
             return {
-                text: "Analisar",
+                text: "Visualizar",
                 className: "border hover:bg-gray-200 text-black",
                 icon: <Eye size={16} className="mr-2" />,
                 action: "Analisar"

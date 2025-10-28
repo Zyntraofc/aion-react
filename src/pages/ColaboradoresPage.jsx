@@ -5,7 +5,8 @@ import GenericList from "../components/GenericList/GenericList.jsx";
 import SearchBar from "../components/searchBar/index.jsx";
 import AddColaboradorCard from "../components/addColaboratorCard/AddColaboradorCard.jsx";
 import ViewEmployeeModal from "../components/colaborator/viewColaboratorCard";
-
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 function ColaboradoresPage() {
 
@@ -13,6 +14,7 @@ function ColaboradoresPage() {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("view");
+
 
     const handleViewEmployee = (employee) => {
         setSelectedEmployee(employee);

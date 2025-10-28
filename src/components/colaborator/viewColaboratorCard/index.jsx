@@ -480,7 +480,7 @@ export default function ViewEmployeeModal({
                                 </div>
                             )}
                             {/* Botões */}
-                            <div className="flex justify-end gap-3 pt-6 border-t border-gray-200">
+                            <div className="flex justify-end gap-3 pt-6 ">
                                 {isEditing ? (
                                     <>
                                         <button

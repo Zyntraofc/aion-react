@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-// import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { X, UserPlus, Loader, Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
 import axios from "axios";
 import Tabs from '../tabs'; // Ajuste o caminho se necessário
@@ -328,12 +328,6 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                 {activeTab === "Cadastro Manual" && (
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5 pt-2">
 
-                        {dataError && (
-                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                                <span className="block sm:inline">{dataError}</span>
-                            </div>
-                        )}
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
 
                             {/* Linha 1: Nome Completo e Matrícula */}
@@ -594,6 +588,12 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                         </div>
 
                         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+                        {dataError && (
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline">{dataError}</span>
+                            </div>
+                        )}
 
                         {/* Botões de Ação */}
                         <div className="flex justify-end gap-3 mt-4">

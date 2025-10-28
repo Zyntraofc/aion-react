@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// Importar Link, além de useNavigate
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebaseConfig.js";
@@ -22,7 +21,6 @@ function LoginPage() {
             navigate("/home");
         } catch (error) {
             console.error("Erro ao logar:", error.message);
-            // Usar um modal de erro ou toast em vez de alert()
             alert("Falha no login: " + error.message);
         } finally {
             setLoading(false);
@@ -30,10 +28,11 @@ function LoginPage() {
     };
 
     return (
-        <div className="w-full flex items-center justify-center font-sans">
-            <div className="grid grid-cols-5 rounded-3xl shadow-2xl z-10 max-w-4xl w-full bg-gray-100 p-4 gap-4">
-                <div className="bg-white rounded-2xl col-span-3 flex flex-col justify-center px-5 py-5">
-                    <header className="mb-10 flex justify-between items-center">
+        <div className="w-full min-h-screen flex items-center justify-center font-sans p-4">
+            <div className="grid grid-cols-1 lg:grid-cols-5 rounded-3xl shadow-2xl z-10 max-w-4xl w-full bg-gray-100 p-4 gap-4">
+                {/* Coluna do Formulário */}
+                <div className="bg-white rounded-2xl lg:col-span-3 flex flex-col justify-center px-4 sm:px-5 py-5">
+                    <header className="mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div className="flex items-center space-x-2">
                             <div className="bg-white rounded-xl w-10 h-10 flex items-center justify-center">
                                 <img
@@ -42,36 +41,35 @@ function LoginPage() {
                                     className="w-full h-full"
                                 />
                             </div>
-                            <h1 className="text- font-semibold text-primary">aion</h1>
+                            <h1 className="text-lg font-semibold text-primary">aion</h1>
                         </div>
 
-                        {/* Link Cadastre-se: AGORA USA <Link> DO REACT-ROUTER-DOM */}
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 text-center sm:text-left">
                             Não tem uma conta?
-                            <Link // <-- MUDANÇA: USANDO <Link>
-                                to="/signup" // <-- MUDANÇA: APONTA PARA A ROTA /signup
+                            <Link
+                                to="/signup"
                                 className="text-primary hover:text-indigo-700 font-medium ml-1 transition"
                             >
                                 Cadastre-se
                             </Link>
                         </p>
                     </header>
-                    <div className="pl-10 pr-10">
-                        {/* TÍTULO PRINCIPAL */}
-                        <h1 className="text-[100%] font-bold text-gray-900 mb-2">
+
+                    <div className="px-4 sm:px-10">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                             Comece agora
                         </h1>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-gray-600 mb-6 text-sm sm:text-base">
                             Por favor, entre com as suas credenciais
                         </p>
 
-                        {/* FORMULÁRIO */}
-                        <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
+                        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
                             <div>
                                 <label
                                     htmlFor="email"
                                     className="block text-sm font-medium text-primary mb-1"
-                                > E-mail
+                                >
+                                    E-mail
                                 </label>
                                 <input
                                     type="email"
@@ -80,7 +78,7 @@ function LoginPage() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="seu.email@exemplo.com"
                                     required
-                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-tertiary transition"
+                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-tertiary transition text-sm sm:text-base"
                                 />
                             </div>
 
@@ -88,7 +86,8 @@ function LoginPage() {
                                 <label
                                     htmlFor="password"
                                     className="block text-sm font-medium text-primary mb-1"
-                                > Senha
+                                >
+                                    Senha
                                 </label>
                                 <input
                                     type="password"
@@ -97,13 +96,12 @@ function LoginPage() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Digite sua senha"
                                     required
-                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-tertiary transition"
+                                    className="w-full p-3 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-tertiary transition text-sm sm:text-base"
                                 />
                             </div>
 
-                            {/* Link Esqueceu a senha? */}
                             <div className="text-right">
-                                <Link // É uma boa prática usar <Link> aqui também
+                                <Link
                                     to="/forgot-password"
                                     className="text-sm text-primary hover:text-indigo-600 transition"
                                 >
@@ -114,8 +112,7 @@ function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                // Estilo do botão ajustado para o layout
-                                className={`w-full py-3 mt-4 mb-6 font-semibold rounded-2xl transition duration-200 shadow-md ${
+                                className={`w-full py-3 mt-2 mb-4 font-semibold rounded-2xl transition duration-200 shadow-md text-sm sm:text-base ${
                                     loading
                                         ? "bg-gray-400 cursor-not-allowed"
                                         : "bg-gradient-to-r from-primary to-tertiary hover:from-indigo-600 hover:to-primary text-white"
@@ -125,19 +122,19 @@ function LoginPage() {
                             </button>
                         </form>
                     </div>
-
                 </div>
-                <div className="bg-gradient-to-br from-primary to-tertiary text-white rounded-2xl col-span-2">
-                    {/* Conteúdo principal */}
-                    <div className="pt-20 h-full flex flex-col items-center justify-between ">
-                        <h3 className="text-xl font-semibold leading-snug">
+
+                {/* Coluna da Imagem - Oculta em mobile */}
+                <div className="hidden lg:flex bg-gradient-to-br from-primary to-tertiary text-white rounded-2xl lg:col-span-2">
+                    <div className="pt-20 h-full flex flex-col items-center justify-between w-full">
+                        <h3 className="text-xl font-semibold leading-snug text-center px-4">
                             Entenda o tempo e transforme <br/>a presença das suas equipes!
                         </h3>
-                        <div className=" bottom-0 left-0 w-[100%] h-[80%]">
+                        <div className="w-full h-[80%] mt-4">
                             <img
                                 src={mockupDemonstracao}
-                                alt="Mockup cortado"
-                                className="w-full h-full object-cover "
+                                alt="Mockup demonstrativo"
+                                className="w-full h-full object-cover"
                             />
                         </div>
                     </div>

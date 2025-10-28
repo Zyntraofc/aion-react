@@ -1,9 +1,97 @@
-import { fetchWithAuth } from './authFetch';
+// endpoints.js
+import { fetchWithAuth } from './authFetch'; // usado por getEmpresa
+import { getAuth } from "firebase/auth";
+
+
+function getLoggedEmail() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user && user.email) return Promise.resolve(user.email);
+
+    return new Promise((resolve) => {
+        const unsub = auth.onAuthStateChanged((u) => {
+            unsub();
+            resolve(u?.email ?? null);
+        });
+    });
+}
+
+let cachedCdEmpresa = null;
+let gettingCdEmpresaPromise = null;
+
+/* -------------------------
+   getEmpresa(email) — retorna cdEmpresa (usa fetchWithAuth internamente)
+   ------------------------- */
+export async function getEmpresa(email) {
+    if (!email) return null;
+    if (cachedCdEmpresa) return cachedCdEmpresa;
+    if (gettingCdEmpresaPromise) return gettingCdEmpresaPromise;
+
+    gettingCdEmpresaPromise = (async () => {
+        try {
+            // 1) buscar funcionário por email
+            const apiFuncionario = `/api/v1/funcionario/buscar/email/${encodeURIComponent(email)}`;
+            const resFunc = await fetchWithAuth(apiFuncionario);
+            if (!resFunc.ok) {
+                console.error('Erro buscando funcionário:', resFunc.status);
+                return null;
+            }
+            const funcionario = await resFunc.json();
+            if (!funcionario || !funcionario.cdDepartamento) {
+                console.error('Funcionário inválido ou sem cdDepartamento', funcionario);
+                return null;
+            }
+
+            // 2) buscar departamento para pegar cdEmpresa
+            const apiDepartamento = `/api/v1/departamento/buscar/${funcionario.cdDepartamento}`;
+            const resDept = await fetchWithAuth(apiDepartamento);
+            if (!resDept.ok) {
+                console.error('Erro buscando departamento:', resDept.status);
+                return null;
+            }
+            const departamento = await resDept.json();
+            if (!departamento || !departamento.cdEmpresa) {
+                console.error('Departamento inválido ou sem cdEmpresa', departamento);
+                return null;
+            }
+
+            cachedCdEmpresa = departamento.cdEmpresa;
+            return cachedCdEmpresa;
+        } catch (err) {
+            console.error('Erro em getEmpresa:', err);
+            return null;
+        } finally {
+            gettingCdEmpresaPromise = null;
+        }
+    })();
+
+    return gettingCdEmpresaPromise;
+}
+
+/* -------------------------
+   buildJustificativasEndpoint() — constrói a URL completa fora do registry
+   NÃO faz fetch: apenas retorna a string da URL
+   ------------------------- */
+export async function buildJustificativasEndpoint() {
+    const email = await getLoggedEmail();
+    if (!email) {
+        console.error('Usuário não logado — não foi possível montar endpoint de justificativas');
+        return null;
+    }
+
+    const cdEmpresa = await getEmpresa(email);
+    if (!cdEmpresa) {
+        console.error('Não foi possível obter cdEmpresa para o usuário', email);
+        return null;
+    }
+
+    // URL completa — ajuste domínio se preferir usar endpoint relativo
+    return `https://ms-aion-jpa.onrender.com/api/v1/batida/listar/justificativas/${cdEmpresa}`;
+}
 
 export const registry = {
     justificativas: {
-        endpoint: '/api/v1/batida/listar',
-        fetchData: () => fetchWithAuth('/api/v1/batida/listar'),
+        endpoint: buildJustificativasEndpoint(),
         columns: [
             {
                 id: 'dataHoraBatida', label: 'Data/Hora', accessor: 'dataHoraBatida', visible: true,
@@ -73,17 +161,6 @@ export const registry = {
                 visible: true,
                 render: (v, row) => '...'
             },
-        ],
-    },
-
-    onboarding: {
-        endpoint: '/api/onboardings',
-        fetchData: () => fetchWithAuth('/api/onboardings'),
-        columns: [
-            { id: 'candidate', label: 'Candidato', accessor: 'candidate.name', visible: true },
-            { id: 'startDate', label: 'Data Início', accessor: 'startDate', visible: true },
-            { id: 'status', label: 'Status', accessor: 'status', visible: true },
-            { id: 'actions', label: 'Ações', accessor: null, visible: true, render: (v, row) => '...' },
         ],
     },
 };
