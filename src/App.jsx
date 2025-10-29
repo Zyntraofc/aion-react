@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import HomePage from "./pages/HomePage.jsx";
@@ -14,6 +15,8 @@ import icons from "./assets/icons/index.jsx";
 import AnimatedPage from "./pages/AnimatedPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
+import ChatbotButton from "./components/chatBotIcon/index.jsx";
+import Chatbot from "./components/chatBot/index.jsx";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {AnimatePresence} from "framer-motion";
@@ -26,8 +29,14 @@ function AppContent() {
 
     const auth = getAuth();
 
+    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+
+    const toggleChatbot = () => {
+        setIsChatbotOpen(!isChatbotOpen);
+    };
+
     useEffect(() => {
-        // Observa as mudanças de autenticação do Firebase
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setIsAuthenticated(!!user); // true se estiver logado
             setLoading(false); // encerra o estado de carregamento
@@ -36,7 +45,6 @@ function AppContent() {
         return () => unsubscribe();
     }, [auth]);
 
-    // 1. Enquanto o Firebase ainda não respondeu
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen text-gray-600">
@@ -45,7 +53,6 @@ function AppContent() {
         );
     }
 
-    // 2. Se não estiver logado → Rotas Públicas
     if (!isAuthenticated) {
         // Usa location.pathname como key para forçar a transição
         return (
@@ -68,7 +75,7 @@ function AppContent() {
                         />
 
                         {/* Qualquer outra rota (incluindo "/") redireciona para o Login */}
-                        <Route path="*" element={<Navigate to="/login" replace />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </AnimatePresence>
             </div>
@@ -125,6 +132,8 @@ function AppContent() {
                     </Routes>
                 </div>
             </div>
+            <ChatbotButton onClick={toggleChatbot} />
+            {isChatbotOpen && <Chatbot onClose={toggleChatbot} />}
         </main>
     );
 }
