@@ -9,13 +9,21 @@ export function deepGet(obj, path, defaultValue = undefined) {
     return cur === undefined ? defaultValue : cur;
 }
 
-export function buildQuery(params = {}) {
-    const qp = new URLSearchParams();
-    Object.entries(params).forEach(([k, v]) => {
-        if (v === undefined || v === null) return;
-        if (typeof v === 'object') qp.set(k, JSON.stringify(v));
-        else qp.set(k, String(v));
+export function buildQuery(params) {
+    const searchParams = new URLSearchParams();
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === '') return;
+
+        if (Array.isArray(value)) {
+            value.forEach(item => searchParams.append(key, item));
+        } else if (typeof value === 'object') {
+            searchParams.append(key, JSON.stringify(value));
+        } else {
+            searchParams.append(key, value.toString());
+        }
     });
-    const qs = qp.toString();
-    return qs ? `?${qs}` : '';
+
+    const queryString = searchParams.toString();
+    return queryString ? `?${queryString}` : '';
 }
