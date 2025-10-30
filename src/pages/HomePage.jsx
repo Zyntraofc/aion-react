@@ -4,7 +4,7 @@ import Header from "../components/header/index.jsx";
 import Title from "../components/title/index.jsx";
 import QuickInformations from "../components/quickInformations/index.jsx";
 import QuickActions from "../components/quickActions/index.jsx";
-import Recent from "../components/recent/index.jsx";
+import AtividadeRecente from "../components/recent/index.jsx";
 
 export default function HomePage() {
     return (
@@ -22,7 +22,7 @@ export default function HomePage() {
                     <QuickActions />
                 </div>
                 <div className="w-2/5">
-                    <Recent />
+                    <AtividadeRecente limite={3} />
                 </div>
             </div>
         </div>
