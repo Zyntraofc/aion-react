@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { X, UserPlus, Loader, Upload, FileText, CheckCircle, AlertCircle } from "lucide-react";
-import axios from "axios";
 import Tabs from '../tabs'; // Ajuste o caminho se necessário
+
+// Configuração do Basic Auth
+const API_USER = import.meta.env.VITE_API_USER;
+const API_PASS = import.meta.env.VITE_API_PASS;
+const basicAuth = 'Basic ' + btoa(`${API_USER}:${API_PASS}`);
+
+// Headers padrão para todas as requisições
+const defaultHeaders = {
+    'Authorization': basicAuth,
+    'Content-Type': 'application/json'
+};
 
 // As URLs de API foram atualizadas com '/listar'
 const API_DEPARTAMENTOS = "https://ms-aion-jpa.onrender.com/api/v1/departamento/listar";
 const API_CARGOS = "https://ms-aion-jpa.onrender.com/api/v1/cargo/listar";
 const API_GESTORES = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/listar";
 const API_ENDERECOS = "https://ms-aion-jpa.onrender.com/api/v1/endereco/listar";
-const API_IMPORT_EXCEL = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/importar"; // Supondo que existe essa rota
+const API_IMPORT_EXCEL = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/importar";
+const API_INSERIR_FUNCIONARIO = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/inserir";
 
 // Cores baseadas em padrões Tailwind/Indigo
 const PRIMARY_COLOR = "bg-indigo-600 hover:bg-indigo-700";
@@ -43,20 +54,40 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
         setDataError(null);
         try {
             // Busca de Departamentos
-            const deptResponse = await axios.get(API_DEPARTAMENTOS);
-            setDepartamentos(deptResponse.data);
+            const deptResponse = await fetch(API_DEPARTAMENTOS, {
+                method: 'GET',
+                headers: defaultHeaders
+            });
+            if (!deptResponse.ok) throw new Error('Erro ao buscar departamentos');
+            const deptData = await deptResponse.json();
+            setDepartamentos(deptData);
 
             // Busca de Cargos
-            const cargoResponse = await axios.get(API_CARGOS);
-            setCargos(cargoResponse.data);
+            const cargoResponse = await fetch(API_CARGOS, {
+                method: 'GET',
+                headers: defaultHeaders
+            });
+            if (!cargoResponse.ok) throw new Error('Erro ao buscar cargos');
+            const cargoData = await cargoResponse.json();
+            setCargos(cargoData);
 
             // Busca de Gestores
-            const gestoresResponse = await axios.get(API_GESTORES);
-            setGestores(gestoresResponse.data);
+            const gestoresResponse = await fetch(API_GESTORES, {
+                method: 'GET',
+                headers: defaultHeaders
+            });
+            if (!gestoresResponse.ok) throw new Error('Erro ao buscar gestores');
+            const gestoresData = await gestoresResponse.json();
+            setGestores(gestoresData);
 
             // Busca de Endereços
-            const enderecosResponse = await axios.get(API_ENDERECOS);
-            setEnderecos(enderecosResponse.data);
+            const enderecosResponse = await fetch(API_ENDERECOS, {
+                method: 'GET',
+                headers: defaultHeaders
+            });
+            if (!enderecosResponse.ok) throw new Error('Erro ao buscar endereços');
+            const enderecosData = await enderecosResponse.json();
+            setEnderecos(enderecosData);
 
         } catch (err) {
             console.error("❌ Erro ao carregar dados dos dropdowns:", err);
@@ -96,7 +127,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
     const handleDrop = (e) => {
         e.preventDefault();
         setIsDragging(false);
-        
+
         const droppedFiles = e.dataTransfer.files;
         if (droppedFiles.length > 0) {
             processFile(droppedFiles[0]);
@@ -114,7 +145,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
         // Validar se é um arquivo Excel
         const validExtensions = ['.xlsx', '.xls', '.csv'];
         const fileExtension = selectedFile.name.toLowerCase().slice(selectedFile.name.lastIndexOf('.'));
-        
+
         if (!validExtensions.includes(fileExtension)) {
             setUploadStatus('error');
             setUploadMessage('Por favor, selecione um arquivo Excel válido (.xlsx, .xls, .csv)');
@@ -147,17 +178,23 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
         formData.append('file', file);
 
         try {
-            // const response = 
-            await axios.post(API_IMPORT_EXCEL, formData, {
+            const response = await fetch(API_IMPORT_EXCEL, {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Authorization': basicAuth
+                    // Não definir Content-Type para FormData - o browser define automaticamente com boundary
                 },
-                timeout: 30000 // 30 segundos timeout
+                body: formData
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Erro ao importar arquivo');
+            }
 
             setUploadStatus('success');
             setUploadMessage('Arquivo importado com sucesso! Colaboradores serão processados em breve.');
-            
+
             // Limpar o arquivo após sucesso
             setTimeout(() => {
                 if (onSuccess) onSuccess();
@@ -167,7 +204,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
         } catch (err) {
             console.error('❌ Erro ao importar arquivo Excel:', err);
             setUploadStatus('error');
-            setUploadMessage(err.response?.data?.message || 'Erro ao importar arquivo. Tente novamente.');
+            setUploadMessage(err.message || 'Erro ao importar arquivo. Tente novamente.');
         }
     };
 
@@ -238,8 +275,8 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
 
         // Validação de campos obrigatórios
         const requiredFields = [
-            nomeCompleto, matricula, cdDepartamento, cdCargo, 
-            email, admissao, cpf, rg, estadoCivil, sexo, 
+            nomeCompleto, matricula, cdDepartamento, cdCargo,
+            email, admissao, cpf, rg, estadoCivil, sexo,
             cdGestor, cdEndereco, nascimento
         ];
 
@@ -250,15 +287,22 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
         }
 
         try {
-            await axios.post("https://ms-aion-jpa.onrender.com/api/v1/funcionario/inserir", data, {
-                headers: { "Content-Type": "application/json" }
+            const response = await fetch(API_INSERIR_FUNCIONARIO, {
+                method: 'POST',
+                headers: defaultHeaders,
+                body: JSON.stringify(data)
             });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "Erro ao salvar colaborador");
+            }
 
             if (onSuccess) onSuccess();
             onClose();
         } catch (err) {
             console.error("❌ Erro ao salvar colaborador:", err);
-            const errorMessage = err.response?.data?.message || "Erro ao salvar colaborador";
+            const errorMessage = err.message || "Erro ao salvar colaborador";
             setError(errorMessage);
         } finally {
             setLoading(false);
@@ -284,7 +328,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
     // Estilos para a área de drag and drop
     const getDropZoneStyle = () => {
         const baseStyle = "p-8 border-2 border-dashed rounded-lg text-center transition-all duration-200 cursor-pointer";
-        
+
         if (isDragging) {
             return `${baseStyle} border-indigo-500 bg-indigo-50`;
         }
@@ -646,7 +690,7 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                                 accept=".xlsx,.xls,.csv"
                                 className="hidden"
                             />
-                            
+
                             <div className="flex flex-col items-center justify-center gap-3">
                                 {uploadStatus === 'uploading' ? (
                                     <>
@@ -699,11 +743,11 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
                         {/* Mensagens de status */}
                         {uploadMessage && (
                             <div className={`flex items-center gap-2 p-3 rounded-lg ${
-                                uploadStatus === 'error' 
-                                    ? 'bg-red-100 text-red-700 border border-red-200' 
+                                uploadStatus === 'error'
+                                    ? 'bg-red-100 text-red-700 border border-red-200'
                                     : uploadStatus === 'success'
-                                    ? 'bg-green-100 text-green-700 border border-green-200'
-                                    : 'bg-blue-100 text-blue-700 border border-blue-200'
+                                        ? 'bg-green-100 text-green-700 border border-green-200'
+                                        : 'bg-blue-100 text-blue-700 border border-blue-200'
                             }`}>
                                 {uploadStatus === 'error' ? (
                                     <AlertCircle size={20} />
