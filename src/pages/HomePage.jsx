@@ -1,4 +1,3 @@
-// src/DashboardPage.jsx
 import React from 'react';
 import Header from "../components/header/index.jsx";
 import Title from "../components/title/index.jsx";
@@ -17,11 +16,14 @@ export default function HomePage() {
                 {title: "Taxa de Aprovação", value: 47 }
             ]}
             />
-            <div className="flex flex-1 pt-2 space-x-4">
-                <div className="w-3/5">
+
+            <div className="flex flex-wrap pt-2 -mx-2">
+
+                <div className="w-full sm:w-1/2 lg:w-3/5 px-2 mb-4 lg:mb-0">
                     <QuickActions />
                 </div>
-                <div className="w-2/5">
+
+                <div className="w-full sm:w-1/2 lg:w-2/5 px-2 mb-4 lg:mb-0">
                     <Recent />
                 </div>
             </div>
