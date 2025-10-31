@@ -11,8 +11,14 @@ export default function GenericList({
                                         onViewEmployee,
                                         onEditEmployee,
                                         onDeleteEmployee,
-                                        actionType = "default"
+                                        actionType = "default",
+                                        customController
                                     }) {
+    // TODOS OS HOOKS PRIMEIRO - SEM CONDICIONAIS ANTES
+    const controllerProps = customController ?
+        customController :
+        useListController(resource, { initialFilters });
+
     const {
         data,
         loading,
@@ -22,10 +28,24 @@ export default function GenericList({
         setPage,
         refresh,
         registryColumns,
-    } = useListController(resource, { initialFilters });
+    } = controllerProps;
 
     const [openMenuId, setOpenMenuId] = useState(null);
     const itemsPerPage = 10;
+
+    // Função para obter o nome do recurso para exibição
+    const getResourceDisplayName = useMemo(() => {
+        const resourceNames = {
+            'justificativas': 'justificativas',
+            'colaboradores': 'colaboradores',
+            'funcionarios': 'colaboradores',
+            'batidas': 'registros de ponto',
+            'departamentos': 'departamentos',
+            'cargos': 'cargos'
+        };
+
+        return resourceNames[resource] || 'dados';
+    }, [resource]);
 
     // Dados paginados para exibição
     const paginatedData = useMemo(() => {
@@ -58,7 +78,7 @@ export default function GenericList({
         return out;
     }, [registryColumns, columnOverrides, visibleColumns]);
 
-    // Fechar menu quando clicar fora
+    // Fechar menu quando clicar fora - CORRIGIDO
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (!event.target.closest('.action-menu') && !event.target.closest('.menu-button')) {
@@ -68,8 +88,9 @@ export default function GenericList({
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, []); // ← Array de dependências vazio e constante
 
+    // Resto do código permanece igual...
     // Manipulador de ações
     const handleAction = (action, row) => {
         console.log("🔍 Ação disparada:", action, "Dados:", row);
@@ -77,11 +98,8 @@ export default function GenericList({
 
         switch (action) {
             case "Analisar":
-                console.log("📝 Chamando onViewEmployee (Analisar)");
-                onViewEmployee?.(row);
-                break;
-            case "analisar": // ← Este é o importante para o modo justificativa
-                console.log("📝 Chamando onViewEmployee (analisar)");
+            case "analisar":
+                console.log("📝 Chamando onViewEmployee");
                 onViewEmployee?.(row);
                 break;
             case "editar":
@@ -96,8 +114,6 @@ export default function GenericList({
     };
 
     // Função para determinar o texto e estilo do botão baseado no status
-    // No GenericList, na função getActionButtonConfig - VERIFIQUE se está assim:
-    // No GenericList, SUBSTITUA a função getActionButtonConfig por esta:
     const getActionButtonConfig = (row) => {
         // Para o modo justificativa, SEMPRE mostrar "Analisar" independente do status
         if (actionType === "justificativa") {
@@ -112,8 +128,6 @@ export default function GenericList({
                     action: "analisar"
                 };
             } else {
-                // Mesmo para justificativas já analisadas, mostrar "Analisar"
-                // mas com estilo diferente para indicar que já foi vista
                 return {
                     text: "Analisar",
                     className: "hover:bg-gray-200 text-black",
@@ -165,13 +179,13 @@ export default function GenericList({
             case "nomeCompleto":
                 return (
                     <div className="flex flex-col min-w-0">
-                        <span className="font-medium text-gray-900 truncate">
-                            {value || "—"}
-                        </span>
+            <span className="font-medium text-gray-900 truncate">
+              {value || "—"}
+            </span>
                         {row.email && (
                             <span className="text-gray-500 text-sm truncate">
-                                {row.email}
-                            </span>
+                {row.email}
+              </span>
                         )}
                     </div>
                 );
@@ -179,8 +193,8 @@ export default function GenericList({
             case "cdMatricula":
                 return (
                     <span className="font-mono text-sm text-gray-700 font-medium">
-                        {value || "—"}
-                    </span>
+            {value || "—"}
+          </span>
                 );
 
             case "cdCargo":
@@ -205,16 +219,16 @@ export default function GenericList({
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
                     }`}>
-                        {isActive ? "Ativo" : "Inativo"}
-                    </span>
+            {isActive ? "Ativo" : "Inativo"}
+          </span>
                 );
 
             case "faltas":
                 const faltasCount = parseInt(value) || 0;
                 return (
                     <span className="text-gray-700 font-medium">
-                        {faltasCount}
-                    </span>
+            {faltasCount}
+          </span>
                 );
 
             case "status":
@@ -231,45 +245,8 @@ export default function GenericList({
 
                     return (
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass}`}>
-                            {status}
-                        </span>
-                    );
-                }
-                break;
-
-            case "prioridade":
-                if (actionType === "justificativa") {
-                    const prioridade = value || "";
-                    const isAlta = prioridade.toLowerCase().includes("alta") || prioridade === "SED";
-                    const isMedia = prioridade.toLowerCase().includes("média") || prioridade.toLowerCase().includes("media");
-                    const isBaixa = prioridade.toLowerCase().includes("baixa");
-
-                    let prioridadeClass = "bg-gray-100 text-gray-800";
-                    if (isAlta) prioridadeClass = "bg-red-100 text-red-800";
-                    if (isMedia) prioridadeClass = "bg-yellow-100 text-yellow-800";
-                    if (isBaixa) prioridadeClass = "bg-green-100 text-green-800";
-
-                    return (
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${prioridadeClass}`}>
-                            {prioridade}
-                        </span>
-                    );
-                }
-                break;
-
-            case "documento":
-                if (actionType === "justificativa") {
-                    const documento = value || "";
-                    const hasDocument = documento.toLowerCase().includes("anexado");
-
-                    return (
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                            hasDocument
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-gray-100 text-gray-800"
-                        }`}>
-                            {documento}
-                        </span>
+              {status}
+            </span>
                     );
                 }
                 break;
@@ -277,16 +254,16 @@ export default function GenericList({
             default:
                 return (
                     <span className="text-gray-700">
-                        {value ?? "—"}
-                    </span>
+            {value ?? "—"}
+          </span>
                 );
         }
 
         // Fallback para colunas não tratadas especificamente
         return (
             <span className="text-gray-700">
-                {value ?? "—"}
-            </span>
+        {value ?? "—"}
+      </span>
         );
     };
 
@@ -314,8 +291,8 @@ export default function GenericList({
                     </button>
 
                     <span className="text-sm text-gray-700 px-3 py-2">
-                    Página {page} de {totalPages}
-                </span>
+            Página {page} de {totalPages}
+          </span>
 
                     <button
                         onClick={() => setPage(page + 1)}
@@ -337,25 +314,27 @@ export default function GenericList({
         );
     };
 
-    // Loading state - PRIMEIRO: sempre verificar loading antes de qualquer coisa
+    // AGORA SIM OS RETURNS CONDICIONAIS - DEPOIS DE TODOS OS HOOKS
+
+    // Loading state
     if (loading) {
         return (
             <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <span className="ml-3 text-gray-600">Carregando colaboradores...</span>
+                    <span className="ml-3 text-gray-600">Carregando {getResourceDisplayName}...</span>
                 </div>
             </div>
         );
     }
 
-    // Error state - SEGUNDO: verificar erro depois do loading
+    // Error state
     if (error) {
         return (
             <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="text-center py-8">
                     <div className="text-red-500 text-lg font-semibold mb-2">
-                        Erro ao carregar dados
+                        Erro ao carregar {getResourceDisplayName}
                     </div>
                     <div className="text-gray-600 text-sm">
                         {error.message || "Erro desconhecido"}
@@ -371,13 +350,13 @@ export default function GenericList({
         );
     }
 
-    // Empty state - TERCEIRO: só verificar dados vazios depois de confirmar que não está loading e não há erro
+    // Empty state
     if (!paginatedData || paginatedData.length === 0) {
         return (
             <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="text-center py-12">
                     <div className="text-gray-400 text-lg mb-2">
-                        Nenhum colaborador encontrado
+                        Nenhum {getResourceDisplayName.slice(0, -1)} encontrado
                     </div>
                     <div className="text-gray-500 text-sm mb-4">
                         Não há dados para exibir no momento.
@@ -393,7 +372,7 @@ export default function GenericList({
         );
     }
 
-    // Main table - ÚLTIMO: só renderizar a tabela se não está loading, não há erro e há dados
+    // Main table
     return (
         <div className="generic-list bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">

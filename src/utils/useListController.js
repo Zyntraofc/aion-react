@@ -17,14 +17,14 @@ export function useListController(resource, options = {}) {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(initialPage);
     const [total, setTotal] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true); // ← Iniciar como true
     const [error, setError] = useState(null);
     const [sort, setSort] = useState(initialSort);
     const [filters, setFilters] = useState(initialFilters);
     const abortRef = useRef(null);
 
     const fetchData = useCallback(async (opts = {}) => {
-        setLoading(true);
+        setLoading(true); // ← Garantir que loading seja true ao iniciar
         setError(null);
         if (abortRef.current) abortRef.current.abort();
         abortRef.current = new AbortController();
@@ -62,7 +62,7 @@ export function useListController(resource, options = {}) {
             if (err.name === 'AbortError') return;
             setError(err);
         } finally {
-            setLoading(false);
+            setLoading(false); // ← Só setar false quando terminar
         }
     }, [resourceCfg, page, perPage, sort, filters, extraQuery]);
 
@@ -72,7 +72,7 @@ export function useListController(resource, options = {}) {
             if (abortRef.current) abortRef.current.abort();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [resource, page, perPage, sort, filters]); // resource change will re-run
+    }, [resource, page, perPage, sort, filters]);
 
     return {
         data,
