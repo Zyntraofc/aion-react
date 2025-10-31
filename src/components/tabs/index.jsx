@@ -1,9 +1,14 @@
 import React from 'react';
 
 const Tabs = ({ tabs, activeTab, onTabChange }) => {
+    // Normaliza as tabs para garantir que sejam objetos
+    const normalizedTabs = tabs.map(tab =>
+        typeof tab === 'string' ? { id: tab, label: tab } : tab
+    );
+
     return (
         <div className="flex bg-tertiary rounded-xl p-2 border-b-2 border-gray-200">
-            {tabs.map(({ id, label, count = 0, Icon }) => {
+            {normalizedTabs.map(({ id, label, count = 0, Icon }) => {
                 const isActive = id === activeTab;
 
                 const tabClasses = [

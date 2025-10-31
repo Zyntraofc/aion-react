@@ -154,8 +154,8 @@ const AtividadeRecente = ({ limite = 3 }) => {
                             <span
                                 className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(item.status)}`}
                             >
-                {item.status}
-              </span>
+                                {item.status}
+                              </span>
                         </div>
 
                         <p className="text-sm text-gray-600 mb-2">
