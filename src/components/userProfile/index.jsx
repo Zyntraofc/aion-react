@@ -11,7 +11,7 @@ function UserProfile({ foto, cargo, nome, email }) {
   }
 
   return (
-    <div className="relative flex items-center gap-4 bg-[#3A47FF] rounded-full px-3 py-2 text-white">
+    <div className="relative flex items-center gap-4 bg-[#9299FF] rounded-full px-3 py-2 text-white">
       <img
         src={foto || "https://avatars.githubusercontent.com/u/9919?s=280&v=4"}
         alt="Foto de perfil"
@@ -30,13 +30,13 @@ function UserProfile({ foto, cargo, nome, email }) {
       </span>
       {open && (
         <div className="absolute right-0 top-full mt-2 w-48 rounded-l bg-white shadow-lg text-gray-700 z-50">
-          <button className="block w-full px-4 py-2 text-left hover:bg-purple-50">
+          <button className="block w-full px-4 py-2 text-left hover:bg-purple-50 cursor-pointer">
             Perfil
           </button>
-          <button className="block w-full px-4 py-2 text-left hover:bg-purple-50">
+          <button className="block w-full px-4 py-2 text-left hover:bg-purple-50 cursor-pointer">
             Configurações
           </button>
-          <button onClick={logOut()} className="block w-full px-4 py-2 text-left text-red-500 hover:bg-purple-50">
+          <button onClick={logOut} className="block w-full px-4 py-2 text-left text-red-500 hover:bg-purple-50 cursor-pointer">
             Sair
           </button>
         </div>
