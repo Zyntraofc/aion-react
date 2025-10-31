@@ -91,7 +91,7 @@ export async function buildJustificativasEndpoint() {
 
 export const registry = {
     justificativas: {
-        endpoint: buildJustificativasEndpoint(),
+        endpoint: null,
         columns: [
             {
                 id: 'dataHoraBatida', label: 'Data/Hora', accessor: 'dataHoraBatida', visible: true,
