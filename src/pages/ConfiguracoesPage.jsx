@@ -8,7 +8,6 @@ import ConfiguracoesGeraisTabContent from '../components/ConfiguracoesGerais/ind
 import JustificativasTabContent from '../components/justificationsTabContent/index.jsx';
 import NotificationsTabContents from '../components/NotificationsTabContents/index.jsx';
 import SystemTabContents from '../components/SystemTabContents/index.jsx';
-import EventsTabContents from '../components/eventsTabContents/index.jsx';
 import ReclamacoesTabContent from '../components/reclamacoesTabContents/index.jsx';
 
 
@@ -22,11 +21,14 @@ function ConfiguracoesPage() {
         { id: "sistema", label: "Sistema", Icon: HardDrive, count: 0 },
     ];
 
+
     const [activeTab, setActiveTab] = React.useState(tabsData[0].id);
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);
     }
+
+
 
 
     const renderContent = () => {

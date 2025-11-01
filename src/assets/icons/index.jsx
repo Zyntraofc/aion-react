@@ -10,6 +10,7 @@ import { ReactComponent as ReportIcon } from "./report.svg";
 import { ReactComponent as LearningIcon } from "./learning.svg";
 import { ReactComponent as FigureAionIcons } from "./figureaion.svg";
 import { ReactComponent as DemonstrationIcon } from "./demonstration.svg";
+import { ReactComponent as ComplaintIcon } from "./complaint.svg";
 const icons = {
     logo: LogoIcon,
     home: <HomeIcon/>,
@@ -22,7 +23,8 @@ const icons = {
     report: <ReportIcon/>,
     learning : <LearningIcon/>,
     figure: <FigureAionIcons/>,
-    demonstration: <DemonstrationIcon/>
+    demonstration: <DemonstrationIcon/>,
+    complaint: <ComplaintIcon   />,
 };
 
 export default icons;

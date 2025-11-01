@@ -1,7 +1,9 @@
 import { PlusIcon, Download, BarChart2, Settings, UserPlus, CalendarCheck } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function QuickActions() {
+    const navigate = useNavigate();
     return(
         <div className="flex flex-col p-6 space-y-4 rounded-2xl border border-transparent shadow-sm "
              style={{ background: `
@@ -14,7 +16,7 @@ function QuickActions() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                 {/* Card de Ação - Nova Justificativa */}
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer hover:bg-gray-50">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer hover:bg-gray-50" onClick={() => navigate('/configuracoes')}>
                     <div className="p-3 bg-blue-600 text-white rounded-full mr-4">
                         <PlusIcon size={20} />
                     </div>
@@ -25,7 +27,7 @@ function QuickActions() {
                 </div>
 
                 {/* Card de Ação - Visualizar Relatórios */}
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50" onClick={() => navigate('/dashboard')}>
                     <div className="p-3">
                         <BarChart2 size={20} />
                     </div>
@@ -36,7 +38,7 @@ function QuickActions() {
                 </div>
 
                 {/* Card de Ação - Exportar dados */}
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200  cursor-pointer  hover:bg-gray-50">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200  cursor-pointer  hover:bg-gray-50" onClick={() => navigate('/configuracoes')}>
                     <div className="p-3">
                         <Download size={20} />
                     </div>
@@ -47,7 +49,7 @@ function QuickActions() {
                 </div>
 
                 {/* Card de Ação - Cadastrar Colaborador */}
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50" onClick={() => navigate('/colaboradores')}>
                     <div className="p-3">
                         <UserPlus size={20} />
                     </div>
@@ -58,7 +60,7 @@ function QuickActions() {
                 </div>
 
                 {/* Card de Ação - Configurar Permissões */}
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50" onClick={() => navigate('/configuracoes')}>
                     <div className="p-3 ">
                         <Settings size={20} />
                     </div>
@@ -69,7 +71,7 @@ function QuickActions() {
                 </div>
 
                 {/* Card de Ação - Agenda de Análise */}
-                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-transform duration-200 cursor-pointer  hover:bg-gray-50" onClick={() => navigate('/justificativas')}>
                     <div className="p-3 ">
                         <CalendarCheck size={20} />
                     </div>
