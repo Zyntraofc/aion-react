@@ -161,7 +161,7 @@ function SignupPage() {
 
     const sendDataToEndpoint = async (jsonData) => {
         try {
-            const endpointUrl = "https://seu-endpoint.com/api/cadastro";
+            const endpointUrl = "https://ms-aion-jpa.onrender.com/api/v1/empresa/inserir/responsavel";
 
             const response = await fetch(endpointUrl, {
                 method: "POST",
