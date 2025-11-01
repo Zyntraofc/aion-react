@@ -392,12 +392,17 @@ export default function GenericList({
 
                     <tbody>
                     {paginatedData.map((row, index) => {
-                        const rowId = row.cdFuncionario ?? row.cdMatricula ?? row.id ?? index;
+                        // GARANTIR CHAVE ÚNICA - CORREÇÃO AQUI
+                        const rowId = row.id ||
+                            row.cdFuncionario ||
+                            `${row.cdMatricula}-${index}` ||
+                            `row-${index}`;
+
                         const isMenuOpen = openMenuId === rowId;
 
                         return (
                             <tr
-                                key={rowId}
+                                key={rowId} // ← Esta key deve ser única
                                 className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
                             >
                                 {columns.map((col) => {
@@ -407,7 +412,7 @@ export default function GenericList({
                                         if (actionType === "justificativa") {
                                             const buttonConfig = getActionButtonConfig(row);
                                             return (
-                                                <td key="actions" className="py-3 px-6">
+                                                <td key={`actions-${rowId}`} className="py-3 px-6"> {/* ← Key única aqui também */}
                                                     <div className="flex justify-end">
                                                         <button
                                                             onClick={() => handleAction(buttonConfig.action, row)}
@@ -423,7 +428,7 @@ export default function GenericList({
 
                                         // Modo padrão - menu de três pontinhos
                                         return (
-                                            <td key="actions" className="py-3 px-6">
+                                            <td key={`actions-${rowId}`} className="py-3 px-6"> {/* ← Key única aqui também */}
                                                 <div className="flex">
                                                     <div className="relative">
                                                         <button
@@ -469,9 +474,9 @@ export default function GenericList({
                                         );
                                     }
 
-                                    // Demais colunas
+                                    // Demais colunas - CORREÇÃO AQUI TAMBÉM
                                     return (
-                                        <td key={col.id} className="py-4 px-6 whitespace-nowrap">
+                                        <td key={`${col.id}-${rowId}`} className="py-4 px-6 whitespace-nowrap"> {/* ← Key única para cada célula */}
                                             <div className="flex items-center">
                                                 {renderCellValue(col, row)}
                                             </div>
