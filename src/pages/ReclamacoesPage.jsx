@@ -81,7 +81,7 @@ function ReclamacoesPage() {
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-64 text-gray-600">
-      <Zap size={24} className="animate-spin mr-2 text-indigo-500" />
+      <Zap size={24} className="animate-spin text-indigo-500" />
       Carregando dados...
     </div>
   );
@@ -94,7 +94,7 @@ function ReclamacoesPage() {
   );
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-bold mb-6">Painel de Reclamações</h1>
 
       <ReclamacoesCard

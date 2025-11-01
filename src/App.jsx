@@ -1,6 +1,5 @@
-
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ColaboradoresPage from "./pages/ColaboradoresPage.jsx";
@@ -8,7 +7,7 @@ import JustificativasPage from "./pages/JustificativasPage.jsx";
 import NotificacoesPage from "./pages/NotificacoesPage.jsx";
 import ConfiguracoesPage from "./pages/ConfiguracoesPage.jsx";
 import ReclamacoesPage from "./pages/ReclamacoesPage.jsx";
-import Sidebar from "./components/sidebar";
+import Sidebar  from "./components/sidebar";
 import { SidebarItem } from "./components/sidebarItem";
 import Header from "./components/header/index.jsx";
 import icons from "./assets/icons/index.jsx";
@@ -19,26 +18,26 @@ import ChatbotButton from "./components/chatBotIcon/index.jsx";
 import Chatbot from "./components/chatBot/index.jsx";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { AnimatePresence } from "framer-motion";
+import {AnimatePresence} from "framer-motion";
 
 function AppContent() {
-  const location = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+    const location = useLocation();
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-  const auth = getAuth();
+    const auth = getAuth();
 
-  const toggleChatbot = () => {
-    setIsChatbotOpen((prev) => !prev);
-  };
+    const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+
+    const toggleChatbot = () => {
+        setIsChatbotOpen(!isChatbotOpen);
+    };
 
     useEffect(() => {
-
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setIsAuthenticated(!!user); // true se estiver logado
-            setLoading(false); // encerra o estado de carregamento
+            setIsAuthenticated(!!user);
+            setLoading(false);
         });
 
         return () => unsubscribe();
@@ -52,8 +51,8 @@ function AppContent() {
         );
     }
 
+    // CORREÇÃO: Se não está autenticado, mostra apenas as rotas públicas
     if (!isAuthenticated) {
-        // Usa location.pathname como key para forçar a transição
         return (
             <div className="min-h-screen w-full flex items-center justify-center font-sans bg-gray-100 relative">
                 <div className="fixed left-30 -bottom-2 ">
@@ -61,27 +60,28 @@ function AppContent() {
                 </div>
                 <AnimatePresence mode="wait">
                     <Routes location={location} key={location.pathname}>
-                        {/* Rota para o Login */}
+                        {/* Rota para o Login - CORREÇÃO: também tratamos a rota raiz */}
+                        <Route
+                            path="/"
+                            element={<AnimatedPage><LoginPage /></AnimatedPage>}
+                        />
                         <Route
                             path="/login"
                             element={<AnimatedPage><LoginPage /></AnimatedPage>}
                         />
-
-                        {/* Rota para o Cadastro */}
                         <Route
                             path="/signup"
                             element={<AnimatedPage><SignupPage /></AnimatedPage>}
                         />
-
-                        {/* Qualquer outra rota (incluindo "/") redireciona para o Login */}
-                        <Route path="*" element={<Navigate to="/" replace />} />
+                        {/* Redireciona qualquer outra rota para login */}
+                        <Route path="*" element={<Navigate to="/login" replace />} />
                     </Routes>
                 </AnimatePresence>
             </div>
         );
     }
 
-    // 3. Se estiver logado → Rotas Privadas (App Principal)
+    // Se estiver logado → Rotas Privadas
     const routes = [
         { path: "/home", text: "Home", element: <HomePage />, icon: icons.home },
         { path: "/dashboard", text: "Dashboard", element: <DashboardPage />, icon: icons.dashboard },
@@ -90,40 +90,33 @@ function AppContent() {
         { path: "/reclamacoes", text: "Reclamações", element: <ReclamacoesPage />, icon: icons.complaint },
         { path: "/notificacoes", text: "Notificar", element: <NotificacoesPage />, icon: icons.notification },
         { path: "/configuracoes", text: "Configurações", element: <ConfiguracoesPage />, icon: icons.settings },
-
     ];
 
-  return (
-    <main className="flex min-h-screen bg-gray-100 relative">
-      {/* Sidebar */}
-      <Sidebar isCollapsed={isCollapsed}>
-        {routes.map(({ path, text, icon }) => {
-          const isActive =
-            location.pathname === path ||
-            (path !== "/" && location.pathname.startsWith(path));
-          return (
-            <Link key={path} to={path}>
-              <SidebarItem
-                icon={icon}
-                text={text}
-                active={isActive}
-                collapsed={isCollapsed}
-              />
-            </Link>
-          );
-        })}
-      </Sidebar>
+    return (
+        <main className="flex min-h-screen bg-gray-100">
+            {/* Sidebar */}
+            <Sidebar isCollapsed={isCollapsed}>
+                {routes.map(({ path, text, icon }) => {
+                    const isActive = location.pathname === path || (path !== "/" && location.pathname.startsWith(path));
+                    return (
+                        <Link key={path} to={path}>
+                            <SidebarItem
+                                icon={icon}
+                                text={text}
+                                active={isActive}
+                                collapsed={isCollapsed}
+                            />
+                        </Link>
+                    );
+                })}
+            </Sidebar>
 
             {/* Conteúdo Principal */}
             <div className="flex-1 overflow-y-auto">
                 <Header onToggle={() => setIsCollapsed(!isCollapsed)} />
                 <div className="p-3 pt-0">
                     <Routes>
-                        {/* Se logado, bloqueia acesso direto a /login e /signup */}
-                        <Route path="/login" element={<Navigate to="/home" replace />} />
-                        <Route path="/signup" element={<Navigate to="/home" replace />} />
-
-                        {/* Rota raiz redireciona para a Home */}
+                        {/* CORREÇÃO: Removemos as rotas de login/signup desnecessárias */}
                         <Route path="/" element={<Navigate to="/home" replace />} />
 
                         {/* Rotas principais do aplicativo */}
@@ -133,17 +126,11 @@ function AppContent() {
 
                         {/* CORREÇÃO: Redireciona rotas não encontradas para home */}
                         <Route path="*" element={<Navigate to="/home" replace />} />
-
                     </Routes>
                 </div>
             </div>
             <ChatbotButton onClick={toggleChatbot} />
             {isChatbotOpen && <Chatbot onClose={toggleChatbot} />}
-            {isChatbotOpen && (
-                <div className="fixed bottom-20 right-5 z-50">
-                    <Chatbot onClose={toggleChatbot} />
-                </div>
-            )}
         </main>
     );
 }

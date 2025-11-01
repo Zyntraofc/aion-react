@@ -104,19 +104,6 @@ const AtividadeRecente = ({ limite = 3 }) => {
         );
     }
 
-    // Tela de erro
-    if (erro) {
-        return (
-            <div className="p-6 rounded-2xl bg-white shadow-sm">
-                <div className="flex items-center space-x-2 mb-3">
-                    <HistoryIcon className="w-5 h-5" />
-                    <h2 className="font-semibold">Atividade Recente</h2>
-                </div>
-                <p className="text-center text-red-500 py-4">{erro}</p>
-            </div>
-        );
-    }
-
     // Tela principal
     return (
         <div className="w-full p-6 rounded-2xl bg-white shadow-sm">

@@ -55,7 +55,7 @@ function ConfiguracoesPage() {
 
             <Title title="Configurações" descrição="Configurações do sistema" />
 
-            <div className="p-4">
+            <div className="pt-4">
                 <Tabs tabs={tabsData} activeTab={activeTab} onTabChange={handleTabChange}/>
                 {renderContent()}
             </div>
