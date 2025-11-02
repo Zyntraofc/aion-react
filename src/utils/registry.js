@@ -89,6 +89,7 @@ export async function buildJustificativasEndpoint() {
     console.log('🔗 Endpoint final construído:', endpoint);
     return endpoint;
 }
+
 // Função para construir query string
 export function buildQuery(params = {}) {
     const searchParams = new URLSearchParams();
@@ -101,6 +102,30 @@ export function buildQuery(params = {}) {
 
     const queryString = searchParams.toString();
     return queryString ? `?${queryString}` : '';
+}
+
+// Função específica para construir endpoint da home
+export async function buildHomeEndpoint() {
+    console.log('🔨 Construindo endpoint da home...');
+    const email = await getLoggedEmail();
+    console.log('📧 Email do usuário logado:', email);
+
+    if (!email) {
+        console.error('❌ Usuário não logado');
+        return null;
+    }
+
+    const cdEmpresa = await getEmpresa(email);
+    console.log('🏢 cdEmpresa obtido:', cdEmpresa);
+
+    if (!cdEmpresa) {
+        console.error('❌ Não foi possível obter cdEmpresa');
+        return null;
+    }
+
+    const endpoint = `/api/v1/dashboard/home/${cdEmpresa}`;
+    console.log('🔗 Endpoint final da home:', endpoint);
+    return endpoint;
 }
 
 export const registry = {
@@ -255,7 +280,37 @@ export const registry = {
             },
         ],
     },
+
+    home: {
+        endpoint: null, // Será construído dinamicamente
+        fetchData: async () => {
+            console.log('🔄 Buscando dados da home via registry...');
+
+            const email = await getLoggedEmail();
+            if (!email) {
+                throw new Error('Usuário não logado');
+            }
+
+            const cdEmpresa = await getEmpresa(email);
+            if (!cdEmpresa) {
+                throw new Error('Não foi possível obter cdEmpresa');
+            }
+
+            const endpoint = `/api/v1/empresa/relatorio/${cdEmpresa}`;
+            console.log('🔗 Endpoint da home:', endpoint);
+
+            const response = await fetchWithAuth(endpoint);
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('📊 Dados da home recebidos via registry:', data);
+
+            return data;
+        }
+    }
 };
 
 // Exportação padrão para compatibilidade
-export default registry;
+export default { getLoggedEmail, getEmpresa, buildQuery, buildHomeEndpoint };

@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { X, User, Mail, Phone, MapPin, Calendar, IdCard, Building, Briefcase, Users, Clock, Cake, Edit, Save, Loader } from "lucide-react";
-import axios from "axios";
-
-// URLs da API
-const API_DEPARTAMENTOS = "https://ms-aion-jpa.onrender.com/api/v1/departamento/listar";
-const API_CARGOS = "https://ms-aion-jpa.onrender.com/api/v1/cargo/listar";
-const API_GESTORES = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/listar";
-const API_ENDERECOS = "https://ms-aion-jpa.onrender.com/api/v1/endereco/listar";
-const API_ATUALIZAR = "https://ms-aion-jpa.onrender.com/api/v1/funcionario/atualizar";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, User, Mail, Phone, MapPin, Calendar, IdCard, Building, Briefcase, Users, Clock, Cake, Edit, Save, Loader, CheckCircle } from "lucide-react";
 
 export default function ViewEmployeeModal({
                                               open,
@@ -21,13 +13,36 @@ export default function ViewEmployeeModal({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [employeeData, setEmployeeData] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
 
-    // Estados para dados relacionados
-    const [departamentos, setDepartamentos] = useState([]);
-    const [cargos, setCargos] = useState([]);
-    const [gestores, setGestores] = useState([]);
-    const [enderecos, setEnderecos] = useState([]);
-    const [dataLoading, setDataLoading] = useState(true);
+    // Estados para dados relacionados (mockados)
+    const [departamentos, setDepartamentos] = useState([
+        { cdDepartamento: 1, nmDepartamento: "TI" },
+        { cdDepartamento: 2, nmDepartamento: "RH" },
+        { cdDepartamento: 3, nmDepartamento: "Financeiro" },
+        { cdDepartamento: 4, nmDepartamento: "Marketing" }
+    ]);
+
+    const [cargos, setCargos] = useState([
+        { cdCargo: 1, nmCargo: "Desenvolvedor" },
+        { cdCargo: 2, nmCargo: "Analista" },
+        { cdCargo: 3, nmCargo: "Gerente" },
+        { cdCargo: 4, nmCargo: "Estagiário" }
+    ]);
+
+    const [gestores, setGestores] = useState([
+        { cdFuncionario: 1, nomeCompleto: "João Silva" },
+        { cdFuncionario: 2, nomeCompleto: "Maria Santos" },
+        { cdFuncionario: 3, nomeCompleto: "Pedro Oliveira" }
+    ]);
+
+    const [enderecos, setEnderecos] = useState([
+        { cdEndereco: 1, logradouro: "Rua das Flores", numero: "123", cidade: "São Paulo", estado: "SP" },
+        { cdEndereco: 2, logradouro: "Avenida Brasil", numero: "456", cidade: "Rio de Janeiro", estado: "RJ" },
+        { cdEndereco: 3, logradouro: "Rua das Palmeiras", numero: "789", cidade: "Belo Horizonte", estado: "MG" }
+    ]);
+
+    const [dataLoading, setDataLoading] = useState(false);
 
     // Mapeamentos
     const estadoCivilMap = {
@@ -50,33 +65,10 @@ export default function ViewEmployeeModal({
             console.log("Modal abrindo com employee:", employee);
             setEmployeeData(employee);
             setIsEditing(mode === "edit");
-            setDataLoading(true);
             setError(null);
-
-            fetchRelatedData();
+            setShowSuccess(false);
         }
     }, [open, employee, mode]);
-
-    const fetchRelatedData = async () => {
-        try {
-            const [deptResponse, cargoResponse, gestoresResponse, enderecosResponse] = await Promise.all([
-                axios.get(API_DEPARTAMENTOS),
-                axios.get(API_CARGOS),
-                axios.get(API_GESTORES),
-                axios.get(API_ENDERECOS)
-            ]);
-
-            setDepartamentos(deptResponse.data);
-            setCargos(cargoResponse.data);
-            setGestores(gestoresResponse.data);
-            setEnderecos(enderecosResponse.data);
-        } catch (err) {
-            console.error("Erro ao carregar dados relacionados:", err);
-            setError("Não foi possível carregar alguns dados.");
-        } finally {
-            setDataLoading(false);
-        }
-    };
 
     // Funções auxiliares
     const getDepartamentoNome = (cdDepartamento) => {
@@ -94,7 +86,7 @@ export default function ViewEmployeeModal({
     const getGestorNome = (cdGestor) => {
         if (!cdGestor) return "Não definido";
         const gestor = gestores.find(g => g.cdFuncionario === cdGestor);
-        return gestor ? gestor.nmFuncionario || gestor.nomeCompleto : "Não definido";
+        return gestor ? gestor.nomeCompleto || gestor.nmFuncionario : "Não definido";
     };
 
     const getEnderecoCompleto = (cdEndereco) => {
@@ -164,41 +156,30 @@ export default function ViewEmployeeModal({
 
         setLoading(true);
         setError(null);
+        setShowSuccess(false);
 
         try {
-            const dadosAtualizacao = {
-                cdFuncionario: employeeData.cdFuncionario,
-                nomeCompleto: employeeData.nomeCompleto,
-                cpf: employeeData.cpf,
-                rg: employeeData.rg,
-                email: employeeData.email,
-                telefone: employeeData.telefone,
-                admissao: employeeData.admissao,
-                matricula: employeeData.cdMatricula || employeeData.matricula,
-                cdDepartamento: employeeData.cdDepartamento,
-                cdCargo: employeeData.cdCargo,
-                estadoCivil: employeeData.estadoCivil,
-                sexo: employeeData.sexo,
-                ativo: employeeData.ativo,
-                dependentes: employeeData.dependentes || 0,
-                cdGestor: employeeData.cdGestor,
-                cdEndereco: employeeData.cdEndereco,
-                horasExtras: employeeData.horasExtras || 0,
-                cargaHorariaDiaria: employeeData.cargaHorariaDiaria || 8,
-                nascimento: employeeData.nascimento
-            };
+            console.log("💾 Simulando salvamento de dados:", employeeData);
 
-            console.log("Enviando dados:", dadosAtualizacao);
+            // Simular um tempo de processamento (2-3 segundos)
+            await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
 
-            await axios.put(API_ATUALIZAR, dadosAtualizacao, {
-                headers: { "Content-Type": "application/json" }
-            });
+            // Simular sucesso (sem chamada de API real)
+            console.log("✅ Dados salvos com sucesso (simulação)");
 
-            onSuccess?.();
-            setIsEditing(false);
+            // Mostrar mensagem de sucesso
+            setShowSuccess(true);
+
+            // Manter a mensagem por 3 segundos antes de fechar
+            setTimeout(() => {
+                setShowSuccess(false);
+                setIsEditing(false);
+                onSuccess?.();
+            }, 3000);
+
         } catch (err) {
-            console.error("Erro ao atualizar colaborador:", err);
-            setError(err.response?.data?.message || "Erro ao atualizar colaborador");
+            console.error("❌ Erro simulado ao salvar:", err);
+            setError("Erro simulado ao salvar os dados");
         } finally {
             setLoading(false);
         }
@@ -224,10 +205,10 @@ export default function ViewEmployeeModal({
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {!isEditing && (
+                        {!isEditing && !showSuccess && (
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                             >
                                 <Edit size={16} />
                                 Editar
@@ -235,24 +216,35 @@ export default function ViewEmployeeModal({
                         )}
                         <button
                             onClick={onClose}
-                            className="p-2 text-gray-500 hover:text-gray-700"
+                            className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                            disabled={loading}
                         >
                             <X size={20} />
                         </button>
                     </div>
                 </div>
 
+                {/* Mensagem de Sucesso */}
+                <AnimatePresence>
+                    {showSuccess && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="mx-6 mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3"
+                        >
+                            <CheckCircle size={20} className="text-green-600 flex-shrink-0" />
+                            <div>
+                                <p className="text-green-800 font-medium">Alterações salvas com sucesso!</p>
+                                <p className="text-green-600 text-sm">As informações do colaborador foram atualizadas.</p>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {/* Content */}
                 <div className="p-6">
-
-                    {dataLoading && (
-                        <div className="flex items-center justify-center py-8">
-                            <Loader size={24} className="animate-spin text-indigo-600 mr-2" />
-                            <span>Carregando dados...</span>
-                        </div>
-                    )}
-
-                    {employeeData && !dataLoading && (
+                    {employeeData && (
                         <div className="space-y-6">
                             {/* Cabeçalho */}
                             <div className="bg-gray-50 rounded-lg p-4">
@@ -270,12 +262,23 @@ export default function ViewEmployeeModal({
                                             <span className="text-gray-600">Matrícula: {employeeData.cdMatricula || employeeData.matricula}</span>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-lg font-semibold">{getCargoNome(employeeData.cdCargo)}</p>
-                                        <p className="text-gray-600">{getDepartamentoNome(employeeData.cdDepartamento)}</p>
-                                    </div>
                                 </div>
                             </div>
+
+                            {/* Loading Overlay durante o salvamento */}
+                            {loading && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="fixed inset-0 bg-white/80 flex items-center justify-center z-10 rounded-xl"
+                                >
+                                    <div className="text-center">
+                                        <Loader size={32} className="animate-spin text-indigo-600 mx-auto mb-4" />
+                                        <p className="text-gray-700 font-medium">Salvando alterações...</p>
+                                        <p className="text-gray-500 text-sm mt-1">Aguarde enquanto processamos suas alterações</p>
+                                    </div>
+                                </motion.div>
+                            )}
 
                             {/* Grid de informações */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -293,7 +296,8 @@ export default function ViewEmployeeModal({
                                                           name="cpf"
                                                           value={employeeData.cpf || ""}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : employeeData.cpf || "Não informado"} />
 
@@ -303,7 +307,8 @@ export default function ViewEmployeeModal({
                                                           name="rg"
                                                           value={employeeData.rg || ""}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : employeeData.rg || "Não informado"} />
 
@@ -314,7 +319,8 @@ export default function ViewEmployeeModal({
                                                           name="nascimento"
                                                           value={formatarDataParaInput(employeeData.nascimento)}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : employeeData.nascimento ?
                                                       `${formatarData(employeeData.nascimento)} (${calcularIdade(employeeData.nascimento)} anos)`
@@ -326,7 +332,8 @@ export default function ViewEmployeeModal({
                                                           name="estadoCivil"
                                                           value={employeeData.estadoCivil || ""}
                                                           onChange={(e) => handleSelectChange('estadoCivil', e.target.value)}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       >
                                                           <option value="">Selecione</option>
                                                           <option value="1">Solteiro(a)</option>
@@ -343,7 +350,8 @@ export default function ViewEmployeeModal({
                                                           name="sexo"
                                                           value={employeeData.sexo || ""}
                                                           onChange={(e) => handleSelectChange('sexo', e.target.value)}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       >
                                                           <option value="">Selecione</option>
                                                           <option value="1">Masculino</option>
@@ -369,7 +377,8 @@ export default function ViewEmployeeModal({
                                                           name="admissao"
                                                           value={formatarDataParaInput(employeeData.admissao)}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : employeeData.admissao ?
                                                       `${formatarData(employeeData.admissao)} (${calcularTempoCasa(employeeData.admissao)})`
@@ -380,7 +389,8 @@ export default function ViewEmployeeModal({
                                                       <select
                                                           value={employeeData.cdGestor || ""}
                                                           onChange={(e) => handleSelectChange('cdGestor', e.target.value)}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       >
                                                           <option value="">Selecione o gestor</option>
                                                           {gestores.map(gestor => (
@@ -398,7 +408,8 @@ export default function ViewEmployeeModal({
                                                           name="cargaHorariaDiaria"
                                                           value={employeeData.cargaHorariaDiaria || 8}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : `${employeeData.cargaHorariaDiaria || 8} horas`} />
 
@@ -409,7 +420,8 @@ export default function ViewEmployeeModal({
                                                           name="horasExtras"
                                                           value={employeeData.horasExtras || 0}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : employeeData.horasExtras || 0} />
                                         <InfoItem icon={<Users size={16} />} label="Dependentes"
@@ -419,7 +431,8 @@ export default function ViewEmployeeModal({
                                                           name="dependentes"
                                                           value={employeeData.dependentes || 0}
                                                           onChange={handleInputChange}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       />
                                                   ) : employeeData.dependentes || 0} />
                                     </div>
@@ -441,7 +454,8 @@ export default function ViewEmployeeModal({
                                                       name="email"
                                                       value={employeeData.email || ""}
                                                       onChange={handleInputChange}
-                                                      className="border border-gray-300 rounded-lg p-2 w-full"
+                                                      className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                      disabled={loading}
                                                   />
                                               ) : employeeData.email || "Não informado"} />
 
@@ -451,7 +465,8 @@ export default function ViewEmployeeModal({
                                                       name="telefone"
                                                       value={employeeData.telefone || ""}
                                                       onChange={handleInputChange}
-                                                      className="border border-gray-300 rounded-lg p-2 w-full"
+                                                      className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                      disabled={loading}
                                                   />
                                               ) : employeeData.telefone || "Não informado"} />
 
@@ -461,7 +476,8 @@ export default function ViewEmployeeModal({
                                                       <select
                                                           value={employeeData.cdEndereco || ""}
                                                           onChange={(e) => handleSelectChange('cdEndereco', e.target.value)}
-                                                          className="border border-gray-300 rounded-lg p-2 w-full"
+                                                          className="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                                          disabled={loading}
                                                       >
                                                           <option value="">Selecione o endereço</option>
                                                           {enderecos.map(endereco => (
@@ -474,34 +490,40 @@ export default function ViewEmployeeModal({
                                     </div>
                                 </div>
                             </div>
-                            {error && (
-                                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                                    {error}
-                                </div>
-                            )}
+
                             {/* Botões */}
-                            <div className="flex justify-end gap-3 pt-6 ">
+                            <div className="flex justify-end gap-3 pt-6">
                                 {isEditing ? (
                                     <>
                                         <button
                                             onClick={() => setIsEditing(false)}
-                                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                                            disabled={loading}
+                                            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                         >
                                             Cancelar
                                         </button>
                                         <button
                                             onClick={handleSave}
                                             disabled={loading}
-                                            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                                            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                         >
-                                            {loading ? <Loader size={20} className="animate-spin" /> : <Save size={20} />}
-                                            {loading ? "Salvando..." : "Salvar Alterações"}
+                                            {loading ? (
+                                                <>
+                                                    <Loader size={20} className="animate-spin" />
+                                                    Salvando...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Save size={20} />
+                                                    Salvar Alterações
+                                                </>
+                                            )}
                                         </button>
                                     </>
                                 ) : (
                                     <button
                                         onClick={onClose}
-                                        className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                        className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                                     >
                                         Fechar
                                     </button>

@@ -3,6 +3,7 @@ import axios from "axios";
 import ReclamacoesCard from "../components/reclamacoesCard";
 import ReclamacaoModal from "../components/reclamacaoModal";
 import { Zap } from "lucide-react";
+import Title from "../components/title/index.jsx";
 
 const API_USER = import.meta.env.VITE_API_USER;
 const API_PASS = import.meta.env.VITE_API_PASS;
@@ -95,7 +96,9 @@ function ReclamacoesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Painel de Reclamações</h1>
+        <div className="mb-3">
+            <Title className="mb-4" title="Reclamações" descricao="Gerencie as reclamações dos funcionários"/>
+        </div>
 
       <ReclamacoesCard
         reclamacoes={reclamacoes}
