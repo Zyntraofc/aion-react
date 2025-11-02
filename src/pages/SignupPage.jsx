@@ -132,7 +132,7 @@ function SignupPage() {
             },
             cargo: {
                 nome: "",
-                cargoConfianca: "0",
+                cargoConfianca: "1",
                 ativo: "1"
             },
             responsavel: {
@@ -147,8 +147,8 @@ function SignupPage() {
                 telefone: cTelefone,
                 sexo: cSexo,
                 cdEndereco: null,
-                cdDepartamento: null,
-                cdCargo: null,
+                cdDepartamento: 1,
+                cdCargo: 1,
                 cdGestor: null,
                 hashSenha: "",
                 ativo: "1",
@@ -161,22 +161,31 @@ function SignupPage() {
 
     const sendDataToEndpoint = async (jsonData) => {
         try {
-            const endpointUrl = "https://seu-endpoint.com/api/cadastro";
+            const endpointUrl = "https://ms-aion-jpa.onrender.com/api/v1/empresa/inserir/responsavel";
+
+            const username = "rh";
+            const password = "rhpass";
+            const basicAuth = 'Basic ' + btoa(`${username}:${password}`);
 
             const response = await fetch(endpointUrl, {
                 method: "POST",
                 headers: {
+                    'Authorization': basicAuth,
                     "Content-Type": "application/json",
+                    'Accept': 'application/json',
+                    'Origin': 'http://localhost:5173'
                 },
+                mode: 'cors', // força o modo CORS
                 body: JSON.stringify(jsonData),
             });
 
             if (!response.ok) {
-                throw new Error(`Erro HTTP: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`Erro HTTP: ${response.status} - ${errorText}`);
             }
 
             const result = await response.json();
-            console.log("Dados enviados com sucesso:", result);
+            console.log("✅ Dados enviados com sucesso para o endpoint:", result);
             return result;
         } catch (error) {
             console.error("Erro ao enviar dados para o endpoint:", error);
