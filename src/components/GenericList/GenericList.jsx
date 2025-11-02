@@ -5,30 +5,32 @@ import { MoreHorizontal, Eye, Edit, Trash2, CheckCircle } from "lucide-react";
 
 export default function GenericList({
                                         resource,
-                                        visibleColumns = ['nomeCompleto', 'cdMatricula', 'cdCargo', 'cdDepartamento', 'ativo', 'faltas', 'actions'],
+                                        visibleColumns = [],
                                         columnOverrides = {},
                                         initialFilters = {},
                                         onViewEmployee,
                                         onEditEmployee,
                                         onDeleteEmployee,
                                         actionType = "default",
-                                        customController
+                                        customController,
+                                        data: externalData, // Adicionei esta prop para dados externos
+                                        loading: externalLoading, // Adicionei esta prop para loading externo
                                     }) {
-    // TODOS OS HOOKS PRIMEIRO - SEM CONDICIONAIS ANTES
-    const controllerProps = customController ?
-        customController :
-        useListController(resource, { initialFilters });
+    // Se dados externos foram fornecidos, use-os. Caso contrário, use o controller
+    const shouldUseController = !externalData && !customController;
 
-    const {
-        data,
-        loading,
-        error,
-        page,
-        total,
-        setPage,
-        refresh,
-        registryColumns,
-    } = controllerProps;
+    const controllerProps = customController ||
+        (shouldUseController ? useListController(resource, { initialFilters }) : null);
+
+    // Se temos dados externos, use-os diretamente
+    const data = externalData || controllerProps?.data || [];
+    const loading = externalLoading || controllerProps?.loading || false;
+    const error = controllerProps?.error || null;
+    const page = controllerProps?.page || 1;
+    const total = externalData ? externalData.length : (controllerProps?.total || 0);
+    const setPage = controllerProps?.setPage || (() => {});
+    const refresh = controllerProps?.refresh || (() => {});
+    const registryColumns = controllerProps?.registryColumns || [];
 
     const [openMenuId, setOpenMenuId] = useState(null);
     const itemsPerPage = 10;
@@ -57,6 +59,16 @@ export default function GenericList({
 
     // Configuração das colunas
     const columns = useMemo(() => {
+        // Se não temos registryColumns, use as visibleColumns como base
+        if (registryColumns.length === 0) {
+            return visibleColumns.map(colId => ({
+                id: colId,
+                label: colId.charAt(0).toUpperCase() + colId.slice(1),
+                accessor: colId,
+                visible: true
+            }));
+        }
+
         const byId = {};
         registryColumns.forEach((c) => (byId[c.id] = { ...c }));
 
@@ -69,7 +81,7 @@ export default function GenericList({
         let out = Object.values(byId);
 
         // Filtrar colunas visíveis
-        if (Array.isArray(visibleColumns)) {
+        if (Array.isArray(visibleColumns) && visibleColumns.length > 0) {
             out = out.filter((c) => visibleColumns.includes(c.id));
         } else {
             out = out.filter((c) => c.visible !== false);
@@ -78,7 +90,7 @@ export default function GenericList({
         return out;
     }, [registryColumns, columnOverrides, visibleColumns]);
 
-    // Fechar menu quando clicar fora - CORRIGIDO
+    // Fechar menu quando clicar fora
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (!event.target.closest('.action-menu') && !event.target.closest('.menu-button')) {
@@ -88,9 +100,8 @@ export default function GenericList({
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []); // ← Array de dependências vazio e constante
+    }, []);
 
-    // Resto do código permanece igual...
     // Manipulador de ações
     const handleAction = (action, row) => {
         console.log("🔍 Ação disparada:", action, "Dados:", row);
@@ -118,7 +129,7 @@ export default function GenericList({
         // Para o modo justificativa, SEMPRE mostrar "Analisar" independente do status
         if (actionType === "justificativa") {
             const status = row.status || row.dsStatus || "";
-            const isPendente = status.toLowerCase().includes("pendente");
+            const isPendente = status.toString().toLowerCase().includes("pendente");
 
             if (isPendente) {
                 return {
@@ -139,7 +150,7 @@ export default function GenericList({
 
         // Para outros tipos (modo padrão), manter a lógica original
         const status = row.status || row.dsStatus || "";
-        const isPendente = status.toLowerCase().includes("pendente");
+        const isPendente = status.toString().toLowerCase().includes("pendente");
 
         if (isPendente) {
             return {
@@ -176,16 +187,54 @@ export default function GenericList({
 
         // Renderizações específicas para cada coluna
         switch (col.id) {
+            case "dataHoraBatida":
+                return value ? new Date(value).toLocaleString() : '—';
+
+            case "justificativa":
+                return value ? 'Sim' : 'Não';
+
+            case "status":
+                if (actionType === "justificativa") {
+                    const status = value || "";
+                    const statusStr = status.toString();
+                    const isPendente = statusStr.toLowerCase().includes("pendente");
+                    const isAprovada = statusStr.toLowerCase().includes("aprovada");
+                    const isRecusada = statusStr.toLowerCase().includes("recusada") || statusStr.toLowerCase().includes("incorrente");
+
+                    let statusClass = "bg-gray-100 text-gray-800";
+                    let displayText = statusStr;
+
+                    if (isPendente) {
+                        statusClass = "bg-yellow-100 text-yellow-800";
+                        displayText = "Pendente";
+                    }
+                    if (isAprovada) {
+                        statusClass = "bg-green-100 text-green-800";
+                        displayText = "Aprovada";
+                    }
+                    if (isRecusada) {
+                        statusClass = "bg-red-100 text-red-800";
+                        displayText = "Recusada";
+                    }
+
+                    return (
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass}`}>
+                            {displayText}
+                        </span>
+                    );
+                }
+                return <span className="text-gray-700">{value ?? "—"}</span>;
+
             case "nomeCompleto":
                 return (
                     <div className="flex flex-col min-w-0">
-            <span className="font-medium text-gray-900 truncate">
-              {value || "—"}
-            </span>
+                        <span className="font-medium text-gray-900 truncate">
+                            {value || "—"}
+                        </span>
                         {row.email && (
                             <span className="text-gray-500 text-sm truncate">
-                {row.email}
-              </span>
+                                {row.email}
+                            </span>
                         )}
                     </div>
                 );
@@ -193,8 +242,8 @@ export default function GenericList({
             case "cdMatricula":
                 return (
                     <span className="font-mono text-sm text-gray-700 font-medium">
-            {value || "—"}
-          </span>
+                        {value || "—"}
+                    </span>
                 );
 
             case "cdCargo":
@@ -219,59 +268,34 @@ export default function GenericList({
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
                     }`}>
-            {isActive ? "Ativo" : "Inativo"}
-          </span>
+                        {isActive ? "Ativo" : "Inativo"}
+                    </span>
                 );
 
             case "faltas":
                 const faltasCount = parseInt(value) || 0;
                 return (
                     <span className="text-gray-700 font-medium">
-            {faltasCount}
-          </span>
+                        {faltasCount}
+                    </span>
                 );
-
-            case "status":
-                if (actionType === "justificativa") {
-                    const status = value || "";
-                    const isPendente = status.toLowerCase().includes("pendente");
-                    const isAprovada = status.toLowerCase().includes("aprovada");
-                    const isRecusada = status.toLowerCase().includes("recusada") || status.toLowerCase().includes("incorrente");
-
-                    let statusClass = "bg-gray-100 text-gray-800";
-                    if (isPendente) statusClass = "bg-yellow-100 text-yellow-800";
-                    if (isAprovada) statusClass = "bg-green-100 text-green-800";
-                    if (isRecusada) statusClass = "bg-red-100 text-red-800";
-
-                    return (
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusClass}`}>
-              {status}
-            </span>
-                    );
-                }
-                break;
 
             default:
                 return (
                     <span className="text-gray-700">
-            {value ?? "—"}
-          </span>
+                        {value ?? "—"}
+                    </span>
                 );
         }
-
-        // Fallback para colunas não tratadas especificamente
-        return (
-            <span className="text-gray-700">
-        {value ?? "—"}
-      </span>
-        );
     };
 
     // Componente de paginação
     const Pagination = () => {
-        const totalPages = Math.ceil(data.length / itemsPerPage);
+        const totalPages = Math.ceil(total / itemsPerPage);
         const startItem = (page - 1) * itemsPerPage + 1;
-        const endItem = Math.min(page * itemsPerPage, data.length);
+        const endItem = Math.min(page * itemsPerPage, total);
+
+        if (totalPages <= 1) return null;
 
         return (
             <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 border-t border-gray-200 bg-white gap-3">
@@ -291,8 +315,8 @@ export default function GenericList({
                     </button>
 
                     <span className="text-sm text-gray-700 px-3 py-2">
-            Página {page} de {totalPages}
-          </span>
+                        Página {page} de {totalPages}
+                    </span>
 
                     <button
                         onClick={() => setPage(page + 1)}
@@ -313,8 +337,6 @@ export default function GenericList({
             </div>
         );
     };
-
-    // AGORA SIM OS RETURNS CONDICIONAIS - DEPOIS DE TODOS OS HOOKS
 
     // Loading state
     if (loading) {
@@ -392,17 +414,12 @@ export default function GenericList({
 
                     <tbody>
                     {paginatedData.map((row, index) => {
-                        // GARANTIR CHAVE ÚNICA - CORREÇÃO AQUI
-                        const rowId = row.id ||
-                            row.cdFuncionario ||
-                            `${row.cdMatricula}-${index}` ||
-                            `row-${index}`;
-
+                        const rowId = row.id || row.cdFuncionario || `${row.cdMatricula}-${index}` || `row-${index}`;
                         const isMenuOpen = openMenuId === rowId;
 
                         return (
                             <tr
-                                key={rowId} // ← Esta key deve ser única
+                                key={rowId}
                                 className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
                             >
                                 {columns.map((col) => {
@@ -412,7 +429,7 @@ export default function GenericList({
                                         if (actionType === "justificativa") {
                                             const buttonConfig = getActionButtonConfig(row);
                                             return (
-                                                <td key={`actions-${rowId}`} className="py-3 px-6"> {/* ← Key única aqui também */}
+                                                <td key={`actions-${rowId}`} className="py-3 px-6">
                                                     <div className="flex justify-end">
                                                         <button
                                                             onClick={() => handleAction(buttonConfig.action, row)}
@@ -428,7 +445,7 @@ export default function GenericList({
 
                                         // Modo padrão - menu de três pontinhos
                                         return (
-                                            <td key={`actions-${rowId}`} className="py-3 px-6"> {/* ← Key única aqui também */}
+                                            <td key={`actions-${rowId}`} className="py-3 px-6">
                                                 <div className="flex">
                                                     <div className="relative">
                                                         <button
@@ -474,9 +491,9 @@ export default function GenericList({
                                         );
                                     }
 
-                                    // Demais colunas - CORREÇÃO AQUI TAMBÉM
+                                    // Demais colunas
                                     return (
-                                        <td key={`${col.id}-${rowId}`} className="py-4 px-6 whitespace-nowrap"> {/* ← Key única para cada célula */}
+                                        <td key={`${col.id}-${rowId}`} className="py-4 px-6 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 {renderCellValue(col, row)}
                                             </div>

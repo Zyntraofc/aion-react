@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { buildQuery } from './utils';
-import { registry } from './registry';
+import { registry } from '../utils/registry';
 
 export function useListController(resource, options = {}) {
     const {
@@ -12,67 +12,143 @@ export function useListController(resource, options = {}) {
     } = options;
 
     const resourceCfg = registry[resource];
-    if (!resourceCfg) throw new Error(`Unknown resource: ${resource}`);
+    if (!resourceCfg) {
+        console.error(`❌ Recurso desconhecido: ${resource}`);
+        throw new Error(`Unknown resource: ${resource}`);
+    }
 
     const [data, setData] = useState([]);
     const [page, setPage] = useState(initialPage);
     const [total, setTotal] = useState(0);
-    const [loading, setLoading] = useState(true); // ← Iniciar como true
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sort, setSort] = useState(initialSort);
     const [filters, setFilters] = useState(initialFilters);
+
     const abortRef = useRef(null);
+    const retryCountRef = useRef(0);
+    const maxRetries = 2;
+    const isMountedRef = useRef(true);
 
+    // Função principal de fetch
     const fetchData = useCallback(async (opts = {}) => {
-        setLoading(true); // ← Garantir que loading seja true ao iniciar
-        setError(null);
-        if (abortRef.current) abortRef.current.abort();
-        abortRef.current = new AbortController();
-        const q = {
-            page: opts.page ?? page,
-            perPage: opts.perPage ?? perPage,
-            sort: opts.sort ?? sort,
-            filters: opts.filters ?? filters,
-            ...extraQuery,
-        };
-        try {
-            const user = import.meta.env.VITE_API_USER;
-            const pass = import.meta.env.VITE_API_PASS;
-            const basicAuth = 'Basic ' + btoa(`${user}:${pass}`);
+        if (!isMountedRef.current) return;
 
-            const qs = buildQuery(q);
-            const res = await fetch(`${resourceCfg.endpoint}${qs}`, {
-                signal: abortRef.current.signal,
-                headers: {
-                    'Authorization': basicAuth,
-                    'Content-Type': 'application/json'
-                }
+        // Verificar se já excedeu o número máximo de tentativas
+        if (retryCountRef.current >= maxRetries) {
+            console.error(`❌ Número máximo de tentativas (${maxRetries}) atingido para ${resource}`);
+            setLoading(false);
+            setError(new Error(`Falha após ${maxRetries} tentativas`));
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        // Cancelar requisição anterior
+        if (abortRef.current) {
+            abortRef.current.abort();
+        }
+        abortRef.current = new AbortController();
+
+        try {
+            console.log(`🔄 Buscando dados para recurso: ${resource} (tentativa ${retryCountRef.current + 1})`);
+
+            // Usar a função fetchData do registry
+            const result = await resourceCfg.fetchData({
+                page: opts.page ?? page,
+                perPage: opts.perPage ?? perPage,
+                sort: opts.sort ?? sort,
+                filters: opts.filters ?? filters,
+                ...extraQuery,
             });
-            if (!res.ok) {
-                const txt = await res.text();
-                throw new Error(txt || res.statusText);
-            }
-            const json = await res.json();
-            const dataArray = Array.isArray(json) ? json : (Array.isArray(json.data) ? json.data : []);
-            setData(dataArray);
-            setTotal(typeof json.total === 'number' ? json.total : dataArray.length);
-            setPage(json.page ?? q.page);
+
+            console.log(`📊 Dados recebidos para ${resource}:`, result);
+
+            if (!isMountedRef.current) return;
+
+            setData(result.data || []);
+            setTotal(result.total || result.data?.length || 0);
+            setPage(result.page || (opts.page ?? page));
+
+            // Resetar contador em caso de sucesso
+            retryCountRef.current = 0;
 
         } catch (err) {
-            if (err.name === 'AbortError') return;
-            setError(err);
-        } finally {
-            setLoading(false); // ← Só setar false quando terminar
-        }
-    }, [resourceCfg, page, perPage, sort, filters, extraQuery]);
+            if (!isMountedRef.current) return;
 
+            if (err.name === 'AbortError') {
+                console.log('⏹️ Requisição cancelada');
+                return;
+            }
+
+            console.error(`❌ Erro ao buscar ${resource} (tentativa ${retryCountRef.current + 1}):`, err);
+
+            // Incrementar contador de tentativas
+            retryCountRef.current += 1;
+
+            // Se ainda não atingiu o máximo, tentar novamente
+            if (retryCountRef.current < maxRetries) {
+                console.log(`🔄 Tentando novamente (${retryCountRef.current + 1}/${maxRetries})...`);
+                setTimeout(() => {
+                    if (isMountedRef.current) {
+                        fetchData(opts);
+                    }
+                }, 1000 * retryCountRef.current); // Backoff exponencial
+            } else {
+                setError(err);
+                setLoading(false);
+            }
+        } finally {
+            if (isMountedRef.current) {
+                setLoading(false);
+            }
+        }
+    }, [resource, resourceCfg, page, perPage, sort, filters, extraQuery]);
+
+    // useEffect principal - CORRIGIDO para evitar loops
     useEffect(() => {
+        isMountedRef.current = true;
+        retryCountRef.current = 0;
+
+        console.log(`🎯 Iniciando fetch para: ${resource}`);
         fetchData();
+
         return () => {
-            if (abortRef.current) abortRef.current.abort();
+            console.log(`🧹 Limpando useListController para: ${resource}`);
+            isMountedRef.current = false;
+            if (abortRef.current) {
+                abortRef.current.abort();
+            }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [resource, page, perPage, sort, filters]);
+    }, [resource]); // Apenas resource como dependência - isso evita loops
+
+    // Funções de atualização que não causam re-render desnecessário
+    const refresh = useCallback(() => {
+        retryCountRef.current = 0;
+        fetchData({ page: 1 });
+    }, [fetchData]);
+
+    const handleSetPage = useCallback((newPage) => {
+        setPage(newPage);
+        fetchData({ page: newPage });
+    }, [fetchData]);
+
+    const handleSetFilters = useCallback((newFilters) => {
+        setFilters(newFilters);
+        retryCountRef.current = 0;
+        fetchData({ page: 1, filters: newFilters });
+    }, [fetchData]);
+
+    const handleSetSort = useCallback((newSort) => {
+        setSort(newSort);
+        retryCountRef.current = 0;
+        fetchData({ page: 1, sort: newSort });
+    }, [fetchData]);
+
+    const resetRetries = useCallback(() => {
+        retryCountRef.current = 0;
+    }, []);
 
     return {
         data,
@@ -81,11 +157,12 @@ export function useListController(resource, options = {}) {
         page,
         perPage,
         total,
-        setPage,
-        setPerPage: () => { /* optional: implement */ },
-        setSort,
-        setFilters,
-        refresh: () => fetchData({}),
-        registryColumns: resourceCfg.columns,
+        setPage: handleSetPage,
+        setPerPage: () => { /* implementar se necessário */ },
+        setSort: handleSetSort,
+        setFilters: handleSetFilters,
+        refresh,
+        resetRetries,
+        registryColumns: resourceCfg.columns || [],
     };
 }

@@ -281,25 +281,6 @@ export default function AddColaboradorCard({ open, onClose, onSuccess }) {
             nascimento: formData.get("nascimento")
         };
 
-        try {
-            const response = await fetch(API_INSERIR_FUNCIONARIO, {
-                method: 'POST',
-                headers: defaultHeaders,
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                if (onSuccess) onSuccess();
-                onClose();
-            } else {
-                throw new Error('Erro ao salvar colaborador');
-            }
-        } catch (err) {
-            console.error("Erro ao salvar:", err);
-            setError("Erro ao conectar com a API. Tente novamente.");
-        } finally {
-            setLoading(false);
-        }
     };
 
     const handleTabChange = (tabName) => {
