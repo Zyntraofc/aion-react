@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
-import { auth } from "../utils/firebaseConfig.js";
+import { auth } from "../utils/config/firebaseConfig.js";
 import logo from "../assets/appIcon.png";
 import mockupDemonstracao from "../assets/demonstration.png";
 import {
@@ -12,7 +12,7 @@ import {
     formatTelefone,
     validateStep,
     validateField
-} from "../utils/validation.js";
+} from "../utils/validation/validation.js";
 
 function SignupPage() {
     const [step, setStep] = useState(1);

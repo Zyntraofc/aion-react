@@ -16,6 +16,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import ChatbotButton from "./components/chatBotIcon/index.jsx";
 import Chatbot from "./components/chatBot/index.jsx";
+import { HomeDataProvider } from './pages/HomeDataContext.jsx';
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {AnimatePresence} from "framer-motion";
@@ -138,7 +139,9 @@ function AppContent() {
 export default function App() {
     return (
         <Router>
-            <AppContent />
+            <HomeDataProvider>
+                <AppContent />
+            </HomeDataProvider>
         </Router>
     );
 }
